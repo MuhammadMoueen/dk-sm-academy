@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const stats = [
-  { value: 10000, suffix: "+", label: "Community Members" },
-  { value: 250, suffix: "+", label: "Education Resources" },
+  { value: 1000, suffix: "+", label: "Community Members" },
+  { value: 50, suffix: "+", label: "Education Resources" },
   { value: 100, suffix: "+", label: "Learning Examples" },
   { value: 24, suffix: "/7", label: "Community Support" },
 ];
