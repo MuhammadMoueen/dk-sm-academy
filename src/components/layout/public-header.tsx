@@ -70,10 +70,10 @@ export function PublicHeader() {
 
           <Link
             href="/community"
-            className="hidden min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold text-black shadow-[0_4px_18px_rgba(245,200,66,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)] lg:inline-flex"
+            className="hidden min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)] lg:inline-flex"
           >
-            Join Our Community
-            <span aria-hidden="true" className="text-lg leading-none">
+            <span className="!text-black">Join Our Community</span>
+            <span aria-hidden="true" className="text-lg leading-none !text-black">
               →
             </span>
           </Link>
