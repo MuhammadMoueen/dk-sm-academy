@@ -3,25 +3,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { siteConfig } from "@/config/site";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
 
-function AcademyLogo() {
+const navigation = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Blog", href: "/blog" },
+  { label: "Community", href: "/community" },
+  { label: "Contact", href: "/contact" },
+];
+
+function BrandLogo() {
   return (
     <Link
       href="/"
       aria-label="DK & SM Academy home"
-      className="inline-flex shrink-0 items-center gap-2"
+      className="group inline-flex shrink-0 items-center gap-2.5"
     >
-      <span aria-hidden="true" className="text-3xl font-black text-[#ffd43b]">
-        ↗
+      <span
+        aria-hidden="true"
+        className="relative flex h-10 w-10 items-end justify-center gap-[3px] border-b-2 border-[#f5c842] pb-1"
+      >
+        <span className="h-3 w-1.5 rounded-t-sm bg-[#dcae28] transition-colors group-hover:bg-[#ffe17a]" />
+        <span className="h-5 w-1.5 rounded-t-sm bg-[#f5c842] transition-colors group-hover:bg-[#ffe17a]" />
+        <span className="h-7 w-1.5 rounded-t-sm bg-[#ffe17a] transition-colors group-hover:bg-white" />
+        <span className="absolute -right-0.5 top-0 text-sm font-black text-[#f5c842]">
+          ↗
+        </span>
       </span>
 
-      <span className="flex flex-col leading-tight">
-        <span className="text-base font-extrabold tracking-tight text-white">
-          DK <span className="text-[#ffd43b]">&</span> SM
+      <span className="flex flex-col leading-none">
+        <span className="whitespace-nowrap font-serif text-[19px] font-bold tracking-[-0.06em] text-white sm:text-[21px]">
+          DK <span className="text-[#f5c842]">&</span> SM
         </span>
-        <span className="text-[9px] font-bold tracking-[0.28em] text-[#ffd43b]">
+        <span className="mt-1.5 pl-0.5 text-[9px] font-bold tracking-[0.32em] text-[#f5c842]">
           ACADEMY
         </span>
       </span>
@@ -33,16 +50,16 @@ export function PublicHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-black/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[#f5c842]/20 bg-black/95 backdrop-blur-xl">
       <div className="site-container">
-        <div className="flex min-h-[70px] items-center justify-between gap-4">
-          <AcademyLogo />
+        <div className="flex min-h-[72px] items-center justify-between gap-4">
+          <BrandLogo />
 
           <nav
             aria-label="Main navigation"
-            className="hidden items-center gap-5 lg:flex xl:gap-7"
+            className="hidden items-center gap-4 lg:flex xl:gap-6"
           >
-            {siteConfig.navigation.map((item) => {
+            {navigation.map((item) => {
               const active =
                 pathname === item.href ||
                 (item.href !== "/" && pathname.startsWith(`${item.href}/`));
@@ -52,10 +69,10 @@ export function PublicHeader() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`relative whitespace-nowrap py-6 text-sm font-semibold transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:bg-[#ffd43b] after:transition-transform after:duration-200 ${
+                  className={`relative py-6 text-sm font-semibold transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:bg-[#f5c842] after:transition-transform after:duration-200 ${
                     active
-                      ? "text-[#ffd43b] after:scale-x-100"
-                      : "text-white after:scale-x-0 hover:text-[#ffd43b] hover:after:scale-x-100"
+                      ? "text-[#f5c842] after:scale-x-100"
+                      : "text-gray-200 after:scale-x-0 hover:text-[#f5c842] hover:after:scale-x-100"
                   }`}
                 >
                   {item.label}
@@ -65,8 +82,8 @@ export function PublicHeader() {
           </nav>
 
           <Link
-            href={siteConfig.communityUrl}
-            className="btn-primary hidden !min-h-[42px] !rounded-lg !px-4 !text-xs lg:inline-flex"
+            href="/community"
+            className="hidden min-h-[42px] items-center gap-2 rounded-lg bg-[#f5c842] px-4 text-sm font-bold text-black transition-all duration-200 hover:bg-[#ffe17a] hover:shadow-[0_0_22px_rgba(245,200,66,0.22)] lg:inline-flex"
           >
             Join Community <span aria-hidden="true">→</span>
           </Link>
