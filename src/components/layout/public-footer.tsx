@@ -51,12 +51,14 @@ function SocialIcon({ name }: { name: string }) {
           <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
         </svg>
       );
+
     case "telegram":
       return (
         <svg {...common} fill="currentColor" stroke="none">
-          <path d="m22.4 2.8-3.4 18c-.3 1.3-1 1.6-2.1 1l-5.8-4.3-2.8 2.7c-.3.3-.5.5-1 .5l.4-5.9L18.5 5c.5-.4-.1-.7-.7-.3L4.5 13.2l-5.7-1.8c-1.2-.4-1.2-1.2.3-1.8L21.3 1.1c1-.4 1.8.2 1.1 1.7Z" transform="translate(1 1) scale(.92)" />
+          <path d="M22.4 2.8 19 20.8c-.3 1.3-1 1.6-2.1 1l-5.8-4.3-2.8 2.7c-.3.3-.5.5-1 .5l.4-5.9L18.5 5c.5-.4-.1-.7-.7-.3L4.5 13.2l-5.7-1.8c-1.2-.4-1.2-1.2.3-1.8L21.3 1.1c1-.4 1.8.2 1.1 1.7Z" transform="translate(1 1) scale(.92)" />
         </svg>
       );
+
     case "whatsapp":
       return (
         <svg {...common}>
@@ -64,12 +66,14 @@ function SocialIcon({ name }: { name: string }) {
           <path d="M8.5 7.8c.3-.5.6-.5.9-.5h.5c.2 0 .4.1.5.5l.8 1.8c.1.3.1.5-.1.7l-.7.8c-.2.2-.2.4 0 .7a8.5 8.5 0 0 0 2.9 2.8c.3.2.5.2.7-.1l.9-1.1c.2-.3.4-.3.7-.2l1.8.9c.3.2.5.3.5.5 0 .3-.2 1.3-.8 1.8-.6.6-1.5.8-2.4.6-1-.2-2.3-.8-3.9-2.2-1.4-1.2-2.4-2.8-2.7-3.8-.3-1.1.1-2 .4-2.7Z" />
         </svg>
       );
+
     case "facebook":
       return (
         <svg {...common} fill="currentColor" stroke="none">
           <path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4Z" />
         </svg>
       );
+
     case "instagram":
       return (
         <svg {...common}>
@@ -78,6 +82,7 @@ function SocialIcon({ name }: { name: string }) {
           <circle cx="17.7" cy="6.5" r=".8" fill="currentColor" stroke="none" />
         </svg>
       );
+
     default:
       return (
         <svg {...common} stroke="none" fill="currentColor">
@@ -90,10 +95,10 @@ function SocialIcon({ name }: { name: string }) {
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <h2 className="whitespace-nowrap text-lg font-bold tracking-wide text-[#ffcf32] sm:text-xl">
+      <h2 className="text-base font-semibold tracking-wide text-[#ffcf32] sm:text-lg">
         {children}
       </h2>
-      <div className="mt-3 h-[3px] w-10 rounded-full bg-[#ffcf32]" />
+      <div className="mt-2 h-[3px] w-9 rounded-full bg-[#ffcf32]" />
     </div>
   );
 }
@@ -115,8 +120,8 @@ export function PublicFooter() {
       />
 
       <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-14 lg:pb-10 lg:pt-14">
-        <div className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.78fr_0.95fr_1.3fr] lg:gap-x-12">
-          {/* Brand */}
+        <div className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-[1.15fr_0.7fr_0.9fr_1.2fr] lg:gap-x-12">
+          {/* Brand and social media */}
           <div className="min-w-0">
             <Link
               href="/"
@@ -164,12 +169,13 @@ export function PublicFooter() {
           {/* Quick links */}
           <div className="min-w-0">
             <FooterHeading>Quick Links</FooterHeading>
+
             <ul className="space-y-3.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="inline-block text-sm text-gray-300 transition-all duration-200 hover:translate-x-1 hover:text-[#ffcf32]"
+                    className="inline-block text-sm text-white/90 transition-colors duration-200 hover:text-[#ffcf32]"
                   >
                     {link.label}
                   </Link>
@@ -181,12 +187,13 @@ export function PublicFooter() {
           {/* Services */}
           <div className="min-w-0">
             <FooterHeading>Our Services</FooterHeading>
+
             <ul className="space-y-3.5">
               {services.map((service) => (
                 <li key={service.label}>
                   <Link
                     href={service.href}
-                    className="inline-block text-sm text-gray-300 transition-all duration-200 hover:translate-x-1 hover:text-[#ffcf32]"
+                    className="inline-block text-sm text-white/90 transition-colors duration-200 hover:text-[#ffcf32]"
                   >
                     {service.label}
                   </Link>
@@ -198,40 +205,40 @@ export function PublicFooter() {
           {/* Newsletter */}
           <div className="min-w-0">
             <FooterHeading>Join Our Newsletter</FooterHeading>
+
             <p className="text-sm leading-7 text-gray-300">
               Get the latest market insights, educational content and updates
               directly in your inbox.
             </p>
 
-            <form
-              className="mt-5 flex min-h-12 overflow-hidden rounded-xl border border-white/35 bg-black/60 transition focus-within:border-[#ffcf32]"
-              onSubmit={(event) => event.preventDefault()}
-            >
+            <div className="mt-5 flex min-h-12 overflow-hidden rounded-xl border border-white/35 bg-black/60 focus-within:border-[#ffcf32]">
               <label htmlFor="footer-email" className="sr-only">
                 Email address
               </label>
+
               <input
                 id="footer-email"
                 type="email"
                 placeholder="Enter your email address"
                 className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-white outline-none placeholder:text-gray-400"
               />
+
               <button
-                type="submit"
-                aria-label="Subscribe to newsletter"
+                type="button"
+                aria-label="Newsletter subscription"
                 title="Newsletter subscription will be connected later"
                 className="flex w-14 shrink-0 items-center justify-center bg-[#ffcf32] text-xl font-bold text-black transition hover:bg-[#ffe16b]"
               >
                 →
               </button>
-            </form>
+            </div>
 
             <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-gray-300">
               <span className="text-[#ffcf32]" aria-hidden="true">◆</span>
               We respect your privacy. No spam, ever.
             </p>
 
-            <p className="mt-3 text-xs leading-6 text-gray-400">
+            <p className="mt-3 text-xs leading-6 text-gray-300">
               Educational content only. Trading involves risk and losses are
               possible. Nothing on this website guarantees profits or provides
               personalized financial advice.
@@ -239,13 +246,13 @@ export function PublicFooter() {
           </div>
         </div>
 
-        {/* Copyright bar */}
+        {/* Copyright */}
         <div className="mt-12 border-t border-[#d6a91b]/40 pt-6 sm:mt-14">
           <div className="flex flex-col gap-4 text-sm text-gray-300 sm:flex-row sm:items-center sm:justify-between">
             <p>
-              © {new Date().getFullYear()} DK &amp; SM Academy. All rights
-              reserved.
+              © {new Date().getFullYear()} DK &amp; SM Academy. All rights reserved.
             </p>
+
             <p className="font-semibold tracking-[0.2em] text-[#ffcf32]">
               LEARN <span className="px-1">•</span> GROW{" "}
               <span className="px-1">•</span> SUCCEED
