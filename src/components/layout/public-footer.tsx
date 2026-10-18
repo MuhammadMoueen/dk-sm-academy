@@ -1,15 +1,17 @@
 
 import Link from "next/link";
 
+const currentYear = new Date().getFullYear();
+
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Our Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Blog", href: "/blog" },
-  { label: "Community", href: "/community" },
-  { label: "Learning Hub", href: "/learning" },
-  { label: "FAQs", href: "/faq" },
+  // { label: "Community", href: "/community" },
+  // { label: "Learning Hub", href: "/learning" },
+  // { label: "FAQs", href: "/faq" },
   { label: "Contact Us", href: "/contact" },
 ];
 
@@ -20,6 +22,12 @@ const services = [
   { label: "Trading Strategies", href: "/services" },
   { label: "Learning Resources", href: "/learning" },
   { label: "Community Support", href: "/community" },
+];
+
+const importantLinks = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "Disclaimer", href: "/disclaimer" },
 ];
 
 const socials = [
@@ -94,17 +102,17 @@ function SocialIcon({ name }: { name: string }) {
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-5">
-      <h2 className="text-base font-bold leading-tight tracking-wide text-[#ffcf32] sm:text-lg">
+    <div className="mb-4">
+      <h2 className="!text-base font-bold leading-tight tracking-wide !text-[#ffcf32]">
         {children}
       </h2>
-      <div className="mt-2 h-[3px] w-9 rounded-full bg-[#ffcf32]" />
+      <div className="mt-2 h-[3px] w-8 rounded-full bg-[#ffcf32]" />
     </div>
   );
 }
 
 const footerLinkClass =
-  "inline-block text-sm font-medium text-white/90 transition-all duration-200 hover:font-bold hover:text-[#ffcf32] focus-visible:font-bold focus-visible:text-[#ffcf32]";
+  "inline-block text-sm font-medium !text-white/90 transition-all duration-200 hover:font-bold hover:!text-[#ffcf32] focus-visible:font-bold focus-visible:!text-[#ffcf32]";
 
 export function PublicFooter() {
   return (
@@ -119,11 +127,11 @@ export function PublicFooter() {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-black/60"
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/90 via-black/70 to-black/35"
       />
 
-      <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-14 lg:pb-10 lg:pt-14">
-        <div className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-[1.15fr_0.7fr_0.9fr_1.2fr] lg:gap-x-12">
+      <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-14 lg:pb-10 lg:pt-12">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.15fr_0.7fr_0.9fr_0.85fr_1.2fr] xl:gap-x-10">
           <div className="min-w-0">
             <Link
               href="/"
@@ -145,15 +153,15 @@ export function PublicFooter() {
 
             <Link
               href="/community"
-              className="mt-6 inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-[#ffcf32] px-5 py-3 text-sm font-bold text-black transition duration-300 hover:bg-[#ffda55] hover:shadow-[0_0_22px_rgba(255,207,50,0.25)]"
+              className="mt-6 inline-flex min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)]"
             >
-              Join Our Community
-              <span aria-hidden="true" className="text-lg">
+              <span className="!text-black">Join Our Community</span>
+              <span aria-hidden="true" className="text-lg leading-none !text-black">
                 →
               </span>
             </Link>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-1.5">
               {socials.map((social) => (
                 <a
                   key={social.name}
@@ -162,7 +170,7 @@ export function PublicFooter() {
                   rel="noopener noreferrer"
                   aria-label={`Visit ${social.name}`}
                   title={social.name}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d6a91b]/80 bg-black/50 text-[#ffcf32] transition duration-300 hover:-translate-y-1 hover:border-[#ffcf32] hover:bg-[#ffcf32] hover:text-black"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d6a91b]/80 bg-black/50 !text-[#ffcf32] transition duration-300 hover:-translate-y-1 hover:border-[#ffcf32] hover:bg-[#ffcf32] hover:!text-black"
                 >
                   <SocialIcon name={social.icon} />
                 </a>
@@ -172,7 +180,7 @@ export function PublicFooter() {
 
           <div className="min-w-0">
             <FooterHeading>Quick Links</FooterHeading>
-            <ul className="space-y-3.5">
+            <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className={footerLinkClass}>
@@ -185,11 +193,24 @@ export function PublicFooter() {
 
           <div className="min-w-0">
             <FooterHeading>Our Services</FooterHeading>
-            <ul className="space-y-3.5">
+            <ul className="space-y-2.5">
               {services.map((service) => (
                 <li key={service.label}>
                   <Link href={service.href} className={footerLinkClass}>
                     {service.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="min-w-0">
+            <FooterHeading>Important Links</FooterHeading>
+            <ul className="space-y-2.5">
+              {importantLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className={footerLinkClass}>
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -215,9 +236,10 @@ export function PublicFooter() {
               />
               <button
                 type="button"
-                aria-label="Newsletter subscription"
-                title="Newsletter subscription will be connected later"
-                className="flex w-14 shrink-0 items-center justify-center bg-[#ffcf32] text-xl font-bold text-black transition hover:bg-[#ffda55]"
+                aria-label="Newsletter subscriptions are not available yet"
+                title="Newsletter subscriptions are not available yet"
+                disabled
+                className="flex w-14 shrink-0 cursor-not-allowed items-center justify-center bg-[#ffcf32] text-xl font-bold text-black transition hover:bg-[#ffda55]"
               >
                 →
               </button>
@@ -241,8 +263,7 @@ export function PublicFooter() {
         <div className="mt-12 border-t border-[#d6a91b]/40 pt-6 sm:mt-14">
           <div className="flex flex-col gap-4 text-sm text-gray-300 sm:flex-row sm:items-center sm:justify-between">
             <p>
-              © {new Date().getFullYear()} DK &amp; SM Academy. All rights
-              reserved.
+              © {currentYear} DK &amp; SM Academy. All rights reserved.
             </p>
             <p className="font-semibold tracking-[0.2em] text-[#ffcf32]">
               LEARN <span className="px-1">•</span> GROW{" "}
