@@ -37,7 +37,7 @@ export default function AboutSection() {
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
         <Image
-          src="/images/footer-gold-background.png"
+          src="/images/about-person.png"
           alt=""
           fill
           sizes="100vw"
