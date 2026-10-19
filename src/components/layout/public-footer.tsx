@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 const currentYear = new Date().getFullYear();
 
@@ -157,7 +158,7 @@ export function PublicFooter() {
             </p>
 
             <Link
-              href="https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46"
+              href={siteConfig.communityUrl}
               className="mt-6 inline-flex min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)]"
             >
               <span className="!text-black">Join Our Community</span>

@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 const stats = [
   { value: 1000, suffix: "+", label: "Community Members" },
@@ -101,7 +102,7 @@ export function HeroSection() {
 
             <div className="mt-7 flex flex-col gap-3 min-[420px]:flex-row">
               <Link
-                href="https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46"
+                href={siteConfig.communityUrl}
                 className="btn-primary w-full sm:w-auto"
               >
                 Join Our Community

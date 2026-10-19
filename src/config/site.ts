@@ -14,7 +14,7 @@ export const siteConfig = {
     { label: "Community", href: "/#community" },
     { label: "Contact", href: "/contact" },
   ],
-  communityUrl: "/community",
+  communityUrl: "https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46",
   communityPlatforms: [
     {
       name: "YouTube",

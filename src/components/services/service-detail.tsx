@@ -7,11 +7,23 @@ export function ServiceDetail({ service }: { service: Service }) {
   return (
     <article className="bg-[#080808] text-white">
       <header className="relative isolate overflow-hidden border-b border-[#ffd43b]/35 bg-[#080808]">
+        <Image
+          src={service.image}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="pointer-events-none -z-20 object-cover object-center"
+        />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_50%,rgba(255,196,38,0.12),transparent_48%)]"
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#050505]/70 via-[#050505]/35 to-[#050505]/5"
         />
-        <div className="site-container grid items-center gap-8 py-10 sm:gap-10 sm:py-14 lg:min-h-[440px] lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 lg:py-12">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-[#080808]/20 via-transparent to-black/5"
+        />
+        <div className="site-container relative z-10 flex min-h-[520px] items-center py-10 sm:min-h-[520px] sm:py-14 lg:min-h-[440px] lg:py-12">
           <div className="max-w-2xl">
             <span className="section-eyebrow">
               <span aria-hidden="true">✦</span>
@@ -29,17 +41,6 @@ export function ServiceDetail({ service }: { service: Service }) {
             >
               Join Our Community <span aria-hidden="true">→</span>
             </Link>
-          </div>
-
-          <div className="relative aspect-[16/9] min-w-0 overflow-hidden rounded-2xl border border-[#ffd43b]/35 bg-[#0b0b0b] shadow-[0_18px_60px_rgba(255,196,38,0.12)]">
-            <Image
-              src={service.image}
-              alt={service.imageAlt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 55vw, 100vw"
-              className="object-contain"
-            />
           </div>
         </div>
       </header>
