@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
@@ -72,7 +73,15 @@ function CommunityCard({
           }`}
         >
           {action}
-          {href && <span aria-hidden="true">↗</span>}
+
+          {href && (
+            <span
+              aria-hidden="true"
+              className="inline-block text-xl leading-none"
+            >
+              →
+            </span>
+          )}
         </span>
       </div>
     </>
@@ -103,7 +112,7 @@ export function CommunitySection() {
       aria-labelledby="community-heading"
       className="relative isolate scroll-mt-20 overflow-hidden border-t border-[#ffd43b]/25 bg-[#080808] py-8 text-white sm:py-10 lg:py-10"
     >
-      {/* Unique black-and-gold community background */}
+      {/* Community background image */}
       <Image
         src="/images/community-bg.png"
         alt=""
@@ -112,7 +121,7 @@ export function CommunitySection() {
         className="pointer-events-none -z-20 object-cover object-center opacity-35"
       />
 
-      {/* Dark overlay keeps text and screenshots readable */}
+      {/* Dark overlay for readability */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#080808]/65 via-[#080808]/55 to-[#080808]/90"
@@ -141,7 +150,10 @@ export function CommunitySection() {
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {siteConfig.communityPlatforms.map((platform) => (
-            <CommunityCard key={platform.name} platform={platform} />
+            <CommunityCard
+              key={platform.name}
+              platform={platform}
+            />
           ))}
         </div>
       </div>

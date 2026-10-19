@@ -13,7 +13,7 @@ export function BlogSection() {
     >
       {/* Blog background image */}
       <Image
-        src="/images/blog-bg.png"
+        src="/images/portfolio-bg.png"
         alt=""
         fill
         sizes="100vw"

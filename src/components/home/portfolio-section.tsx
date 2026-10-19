@@ -55,7 +55,7 @@ export function PortfolioSection({
     >
       {/* Portfolio background image */}
       <Image
-        src="/images/portfolio-bg.png"
+        src="/images/blog-bg.png"
         alt=""
         fill
         priority={fullPage}
