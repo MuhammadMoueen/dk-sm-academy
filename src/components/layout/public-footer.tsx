@@ -30,7 +30,7 @@ const importantLinks = [
 const socials = [
   { name: "YouTube",  href: "https://youtube.com/@dksmacademy?si=KRnAEWJxGs0SsMJR", icon: "youtube" },
   { name: "Telegram", href: "https://t.me/xhjkockklkmkkb", icon: "telegram" },
-  { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61593239219138", icon: "facebook" },
+  { name: "Facebook", href: "https://www.facebook.com/Dk7869", icon: "facebook" },
   { name: "Instagram",href: "https://www.instagram.com/dksmacademyexchange?vrfl=bjJvZjE5amV0MHYw", icon: "instagram" },
   { name: "X",        href: "https://x.com/dksmacademy786", icon: "x" },
   { name: "LinkedIn", href: "https://www.linkedin.com/company/dk-sm-academy", icon: "linkedin" },
@@ -157,7 +157,7 @@ export function PublicFooter() {
             </p>
 
             <Link
-              href="/community"
+              href="https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46"
               className="mt-6 inline-flex min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)]"
             >
               <span className="!text-black">Join Our Community</span>
