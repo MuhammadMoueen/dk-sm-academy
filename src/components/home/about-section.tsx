@@ -19,13 +19,13 @@ const features = [
     title: "Buy & Sell",
     description:
       "Get information about cryptocurrency buying and selling, subject to confirmed rates, availability, verification, and applicable rules.",
-    icon: "/images/icon-buy-sell.png",
+    icon: "/images/a(1).png",
   },
   {
     title: "KYC Support",
     description:
       "Understand platform verification steps and requirements. Final approval is always decided by the relevant platform.",
-    icon: "/images/icon-kyc.png",
+    icon: "/images/a(2).png",
   },
 ];
 
@@ -61,13 +61,11 @@ export default function AboutSection() {
 
       <div className="mx-auto grid min-h-[600px] max-w-[1440px] items-center gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.18fr_0.82fr] lg:gap-4 lg:px-16 lg:py-12">
         <div className="relative z-10 max-w-[760px]">
-          {/* Badge: matching the Hero badge styling */}
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#ffcf32]/70 bg-black/35 px-4 py-2 text-xs font-bold uppercase tracking-wide text-[#ffcf32] sm:text-sm">
-            <span aria-hidden="true" className="text-base">
-              ✦
+
+            <span className="section-eyebrow">
+              <span aria-hidden="true">✦</span>
+               About DK &amp; SM Academy
             </span>
-            About DK &amp; SM Academy
-          </p>
 
           <h2
             id="about-heading"
