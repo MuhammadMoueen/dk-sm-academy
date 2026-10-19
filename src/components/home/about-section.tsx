@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -35,7 +36,10 @@ export default function AboutSection() {
       aria-labelledby="about-heading"
       className="relative isolate overflow-hidden bg-[#050505] text-white"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-20"
+      >
         <Image
           src="/images/about-person.png"
           alt=""
@@ -49,6 +53,7 @@ export default function AboutSection() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/85 to-black/10"
       />
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-black/35 via-transparent to-black/20"
@@ -56,9 +61,10 @@ export default function AboutSection() {
 
       <div className="mx-auto grid min-h-[600px] max-w-[1440px] items-center gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.18fr_0.82fr] lg:gap-4 lg:px-16 lg:py-12">
         <div className="relative z-10 max-w-[760px]">
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#ffcf32]/70 bg-black/35 px-4 py-2 text-xs font-bold uppercase tracking-wide !text-[#ffcf32] sm:text-sm">
+          {/* Badge: matching the Hero badge styling */}
+          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#ffcf32]/70 bg-black/35 px-4 py-2 text-xs font-bold uppercase tracking-wide text-[#ffcf32] sm:text-sm">
             <span aria-hidden="true" className="text-base">
-              ★
+              ✦
             </span>
             About DK &amp; SM Academy
           </p>
@@ -67,7 +73,8 @@ export default function AboutSection() {
             id="about-heading"
             className="!text-[clamp(2.75rem,5.2vw,4rem)] !font-extrabold !leading-[1.08] !tracking-tight !text-white"
           >
-            Learn. Explore. <span className="!text-[#ffcf32]">Grow.</span>
+            Learn. Explore.{" "}
+            <span className="!text-[#ffcf32]">Grow.</span>
           </h2>
 
           <h3 className="mt-1 !text-xl !font-bold !leading-snug !tracking-normal !text-[#ffcf32] sm:!text-[1.65rem]">
@@ -82,6 +89,7 @@ export default function AboutSection() {
             to help people make more informed decisions.
           </p>
 
+          {/* Feature icons */}
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-4">
             {features.map((feature, index) => (
               <article
@@ -92,19 +100,23 @@ export default function AboutSection() {
                     : ""
                 }`}
               >
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ffcf32]/50 bg-black/55 p-3 transition duration-300 group-hover:border-[#ffcf32] group-hover:shadow-[0_0_24px_rgba(255,207,50,0.22)] motion-reduce:transition-none">
+                {/* Keep circle size; enlarge the icon inside */}
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ffcf32]/50 bg-black/55 p-1.5 transition duration-300 group-hover:border-[#ffcf32] group-hover:shadow-[0_0_24px_rgba(255,207,50,0.22)] motion-reduce:transition-none">
                   <Image
                     src={feature.icon}
                     alt=""
-                    width={36}
-                    height={36}
+                    width={48}
+                    height={48}
                     className="h-full w-full object-contain"
                   />
                 </div>
+
                 <h4 className="mt-2.5 max-w-24 !text-sm !font-bold !leading-tight !text-white sm:!text-base">
                   {feature.title}
                 </h4>
+
                 <p className="sr-only">{feature.description}</p>
+
                 <span
                   aria-hidden="true"
                   className="mt-2 h-0.5 w-8 rounded-full bg-[#ffcf32]"
