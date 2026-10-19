@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import type { PortfolioItem } from "@/types/portfolio";
 
@@ -26,15 +27,21 @@ function ImagePlaceholder({
         <circle cx="8.5" cy="8.5" r="1.5" />
         <path d="m21 15-5-5L5 21" />
       </svg>
-      <span className="font-semibold text-[#ffd43b]">{title}</span>
-      <span className="text-sm text-gray-400">{detail}</span>
+
+      <span className="font-semibold text-[#ffd43b]">
+        {title}
+      </span>
+
+      <span className="text-sm text-gray-400">
+        {detail}
+      </span>
     </div>
   );
 }
 
 function ClientAvatar({ item }: { item?: PortfolioItem }) {
   return (
-    <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#303030] ring-1 ring-[#ffd43b]/20">
+    <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#303030] ring-1 ring-[#ffd43b]/30">
       {item?.clientImage ? (
         <Image
           src={item.clientImage}
@@ -68,9 +75,10 @@ export function PortfolioCard({
   preview?: boolean;
 }) {
   return (
-    <article className="group min-w-0 snap-start rounded-2xl border border-[#ffd43b]/40 bg-[#111] p-3 shadow-[0_12px_34px_rgba(0,0,0,0.32)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/65 hover:shadow-[0_16px_40px_rgba(255,207,50,0.09)] motion-reduce:transform-none motion-reduce:transition-none sm:p-4">
+    <article className="group relative flex min-w-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/35 bg-[#111]/90 p-3 shadow-[0_12px_34px_rgba(0,0,0,0.32)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/70 hover:shadow-[0_16px_40px_rgba(255,207,50,0.12)] motion-reduce:transform-none motion-reduce:transition-none sm:p-4">
+      {/* Transaction screenshot */}
       {item?.transactionImage ? (
-        <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#202020]">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-[#ffd43b]/20 bg-[#202020]">
           <Image
             src={item.transactionImage}
             alt={`Transaction screenshot shared by ${item.clientName}`}
@@ -90,12 +98,15 @@ export function PortfolioCard({
         />
       )}
 
-      <div className="flex items-center gap-3 px-1 pb-1 pt-4">
+      {/* Client profile */}
+      <div className="flex min-w-0 items-center gap-3 px-1 pb-1 pt-4">
         <ClientAvatar item={item} />
-        <div className="min-w-0">
-          <h3 className="mb-1 truncate text-lg font-bold !text-white">
+
+        <div className="min-w-0 flex-1">
+          <h3 className="mb-1 truncate text-lg font-bold text-white">
             {item?.clientName ?? "Client name"}
           </h3>
+
           {item ? (
             <time
               dateTime={item.createdAt}
@@ -113,12 +124,22 @@ export function PortfolioCard({
         </div>
       </div>
 
-      <p className="mb-1 mt-3 px-1 text-sm leading-relaxed text-gray-300">
-        {item?.review ??
-          (preview
-            ? "Client review will appear here after the entry is published."
-            : "A client review will appear here when an entry is published.")}
-      </p>
+      {/* Client review */}
+      <div className="mt-3 flex-1 rounded-xl border border-[#ffd43b]/10 bg-white/[0.02] p-3">
+        <div
+          aria-hidden="true"
+          className="mb-2 text-lg leading-none tracking-[0.15em] text-[#ffd43b]"
+        >
+          ★★★★★
+        </div>
+
+        <p className="text-sm leading-relaxed text-gray-300">
+          {item?.review ??
+            (preview
+              ? "Client review will appear here after the entry is published."
+              : "A client review will appear here when an entry is published.")}
+        </p>
+      </div>
     </article>
   );
 }
