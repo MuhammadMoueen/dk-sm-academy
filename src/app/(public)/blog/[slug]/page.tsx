@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleContent } from "@/components/blog/article-content";
 import { ArticleThumbnail } from "@/components/blog/article-thumbnail";
@@ -61,12 +62,12 @@ async function PublishedArticle({ params }: ArticlePageProps) {
       <div className="site-container">
         <div className="mx-auto max-w-4xl">
           <header className="mb-8">
-            <a
+            <Link
               href="/blog"
               className="mb-5 inline-flex min-h-10 items-center font-semibold !text-[#ffd43b] underline underline-offset-4 hover:!text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
             >
               ← All articles
-            </a>
+            </Link>
             {article.category && (
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-[#ffd43b]">
                 {article.category}
