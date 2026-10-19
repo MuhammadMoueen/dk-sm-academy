@@ -1,3 +1,5 @@
+import { ServicesSection } from "@/components/services/services-section";
+
 export default function ServicesPage() {
-  return null;
+  return <ServicesSection priority />;
 }

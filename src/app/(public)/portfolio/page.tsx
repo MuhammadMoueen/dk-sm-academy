@@ -1,3 +1,5 @@
+import { PortfolioSection } from "@/components/home/portfolio-section";
+
 export default function PortfolioPage() {
-  return null;
+  return <PortfolioSection />;
 }

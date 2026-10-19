@@ -4,23 +4,20 @@ import Link from "next/link";
 const currentYear = new Date().getFullYear();
 
 const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Our Services", href: "/services" },
-  { label: "Portfolio", href: "/portfolio" },
+  { label: "Home", href: "/#home" },
+  { label: "About Us", href: "/#about" },
+  { label: "Our Services", href: "/#services" },
+  { label: "Portfolio", href: "/#portfolio" },
+  { label: "Community", href: "/#community" },
   { label: "Blog", href: "/blog" },
-  // { label: "Community", href: "/community" },
-  // { label: "Learning Hub", href: "/learning" },
-  // { label: "FAQs", href: "/faq" },
-  { label: "Contact Us", href: "/contact" },
 ];
 
 const services = [
-  { label: "Forex Education", href: "/services" },
-  { label: "Crypto Education", href: "/services" },
-  { label: "Market Analysis", href: "/services" },
-  { label: "Trading Strategies", href: "/services" },
-  { label: "Learning Resources", href: "/learning" },
+  { label: "Buy & Sell", href: "/services/buy-sell" },
+  { label: "Airdrops", href: "/services/airdrops" },
+  { label: "Exchange Campaigns", href: "/services/exchange-campaigns" },
+  { label: "Market Analysis", href: "/services/trading" },
+  { label: "Learning Resources", href: "/services/courses" },
   { label: "Community Support", href: "/community" },
 ];
 
@@ -31,12 +28,12 @@ const importantLinks = [
 ];
 
 const socials = [
-  { name: "YouTube", href: "https://youtube.com", icon: "youtube" },
-  { name: "Telegram", href: "https://telegram.org", icon: "telegram" },
-  { name: "WhatsApp", href: "https://whatsapp.com", icon: "whatsapp" },
-  { name: "Facebook", href: "https://facebook.com", icon: "facebook" },
-  { name: "Instagram", href: "https://instagram.com", icon: "instagram" },
-  { name: "X", href: "https://x.com", icon: "x" },
+  { name: "YouTube",  href: "https://youtube.com/@dksmacademy?si=KRnAEWJxGs0SsMJR", icon: "youtube" },
+  { name: "Telegram", href: "https://t.me/xhjkockklkmkkb", icon: "telegram" },
+  { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61593239219138", icon: "facebook" },
+  { name: "Instagram",href: "https://www.instagram.com/dksmacademyexchange?vrfl=bjJvZjE5amV0MHYw", icon: "instagram" },
+  { name: "X",        href: "https://x.com/dksmacademy786", icon: "x" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/dk-sm-academy", icon: "linkedin" },
 ];
 
 function SocialIcon({ name }: { name: string }) {
@@ -67,14 +64,6 @@ function SocialIcon({ name }: { name: string }) {
         </svg>
       );
 
-    case "whatsapp":
-      return (
-        <svg {...common}>
-          <path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.4-4.7a8.5 8.5 0 1 1 16.1-4.1Z" />
-          <path d="M8.5 7.8c.3-.5.6-.5.9-.5h.5c.2 0 .4.1.5.5l.8 1.8c.1.3.1.5-.1.7l-.7.8c-.2.2-.2.4 0 .7a8.5 8.5 0 0 0 2.9 2.8c.3.2.5.2.7-.1l.9-1.1c.2-.3.4-.3.7-.2l1.8.9c.3.2.5.3.5.5 0 .3-.2 1.3-.8 1.8-.6.6-1.5.8-2.4.6-1-.2-2.3-.8-3.9-2.2-1.4-1.2-2.4-2.8-2.7-3.8-.3-1.1.1-2 .4-2.7Z" />
-        </svg>
-      );
-
     case "facebook":
       return (
         <svg {...common} fill="currentColor" stroke="none">
@@ -90,6 +79,22 @@ function SocialIcon({ name }: { name: string }) {
           <circle cx="17.7" cy="6.5" r=".8" fill="currentColor" stroke="none" />
         </svg>
       );
+      case "x":
+        return (
+          <svg {...common} viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.637 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932Zm-1.29 19.493h2.039L6.486 3.24H4.298L17.61 20.646Z"
+            />
+          </svg>
+        );
+      case "linkedin":
+        return (
+          <svg {...common} viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.35V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124ZM7.119 20.452H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"
+            />
+          </svg>
+        );
 
     default:
       return (

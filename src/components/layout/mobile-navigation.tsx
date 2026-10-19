@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HomepageAnchor } from "@/components/layout/homepage-anchor";
 import { siteConfig } from "@/config/site";
 
 export function MobileNavigation() {
@@ -30,19 +31,32 @@ export function MobileNavigation() {
         >
           <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
             {siteConfig.navigation.map((item) => {
-              const isActive = pathname === item.href;
+              const isSectionLink = item.href.startsWith("/#");
+              const isActive =
+                !isSectionLink && pathname === item.href;
+              const className = `rounded-lg px-4 py-3 text-sm font-medium transition ${
+                isActive
+                  ? "bg-[#ffd43b] text-black"
+                  : "text-gray-200 hover:bg-white/5 hover:text-[#ffd43b]"
+              }`;
 
-              return (
+              return isSectionLink ? (
+                <HomepageAnchor
+                  key={item.href}
+                  sectionId={item.href.slice(2)}
+                  onClick={() => setIsOpen(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={className}
+                >
+                  {item.label}
+                </HomepageAnchor>
+              ) : (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-lg px-4 py-3 text-sm font-medium transition ${
-                    isActive
-                      ? "bg-[#ffd43b] text-black"
-                      : "text-gray-200 hover:bg-white/5 hover:text-[#ffd43b]"
-                  }`}
+                  className={className}
                 >
                   {item.label}
                 </Link>
