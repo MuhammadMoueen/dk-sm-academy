@@ -6,42 +6,21 @@ import type { Service } from "@/components/services/service-data";
 export function ServiceDetail({ service }: { service: Service }) {
   return (
     <article className="bg-[#080808] text-white">
-      <header className="relative isolate overflow-hidden border-b border-[#ffd43b]/20">
-        <div className="absolute inset-0 -z-20">
-          <Image
-            src={service.image}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center opacity-35"
-          />
-        </div>
+      <header className="relative isolate overflow-hidden border-b border-[#ffd43b]/35 bg-[#080808]">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-r from-black via-black/90 to-black/60"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_50%,rgba(255,196,38,0.12),transparent_48%)]"
         />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-t from-[#080808] via-transparent to-black/20"
-        />
-
-        <div className="site-container flex min-h-[460px] items-center py-16 sm:min-h-[520px] sm:py-20">
-          <div className="max-w-3xl">
-            <Link
-              href="/#services"
-              className="mb-6 inline-flex rounded-sm text-sm font-semibold text-[#ffd43b] underline decoration-[#ffd43b]/70 underline-offset-4 hover:text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
-            >
-              ← All services
-            </Link>
+        <div className="site-container grid items-center gap-8 py-10 sm:gap-10 sm:py-14 lg:min-h-[440px] lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 lg:py-12">
+          <div className="max-w-2xl">
             <span className="section-eyebrow">
               <span aria-hidden="true">✦</span>
               DK &amp; SM Academy
             </span>
-            <h1 className="mb-5 text-[clamp(2.4rem,6vw,4.75rem)] font-extrabold leading-[1.05] tracking-[-0.045em] text-white">
+            <h1 className="mb-4 text-[clamp(2.4rem,6vw,4.5rem)] font-extrabold leading-[1.05] tracking-[-0.045em] text-white">
               {service.title}
             </h1>
-            <p className="mb-8 max-w-2xl text-base leading-relaxed text-gray-200 sm:text-lg">
+            <p className="mb-7 max-w-xl text-base leading-relaxed text-gray-200 sm:text-lg">
               {service.introduction}
             </p>
             <Link
@@ -51,110 +30,74 @@ export function ServiceDetail({ service }: { service: Service }) {
               Join Our Community <span aria-hidden="true">→</span>
             </Link>
           </div>
-        </div>
-      </header>
 
-      <div className="site-container py-14 sm:py-18 lg:py-20">
-        <div className="mx-auto max-w-4xl">
-          <div className="relative mb-12 aspect-[16/9] overflow-hidden rounded-2xl border border-[#ffd43b]/30 bg-[#111] shadow-[0_16px_50px_rgba(0,0,0,0.4)] sm:mb-16">
+          <div className="relative aspect-[16/9] min-w-0 overflow-hidden rounded-2xl border border-[#ffd43b]/35 bg-[#0b0b0b] shadow-[0_18px_60px_rgba(255,196,38,0.12)]">
             <Image
               src={service.image}
               alt={service.imageAlt}
               fill
-              sizes="(min-width: 1024px) 896px, (min-width: 640px) 85vw, 100vw"
-              className="object-cover"
+              priority
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="object-contain"
             />
           </div>
+        </div>
+      </header>
 
-          <div className="space-y-12 sm:space-y-16">
-            {service.sections.map((section, index) => (
-              <section
-                key={section.heading}
-                aria-labelledby={`service-section-${index}`}
-              >
-                <h2
-                  id={`service-section-${index}`}
-                  className="mb-3 text-2xl font-bold text-white sm:text-3xl"
-                >
-                  {section.heading}
-                </h2>
-                <p className="mb-5 max-w-3xl leading-relaxed text-gray-300">
-                  {section.introduction}
-                </p>
-                <ul className="grid gap-3 sm:grid-cols-2">
-                  {section.points.map((point) => (
-                    <li
-                      key={point}
-                      className="flex gap-3 rounded-xl border border-[#ffd43b]/15 bg-[#111] p-4 text-sm leading-relaxed text-gray-200 sm:p-5"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#ffd43b]"
-                      />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
+      <section
+        aria-labelledby="service-faq-heading"
+        className="relative isolate overflow-hidden border-b border-[#ffd43b]/20"
+      >
+        <Image
+          src="/images/community-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          className="pointer-events-none -z-20 object-cover object-center opacity-35"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-[#050505]/80"
+        />
 
-            <aside className="rounded-2xl border border-[#ffd43b]/35 bg-[#111] p-5 sm:p-7">
-              <h2 className="mb-2 text-xl font-bold text-[#ffd43b]">
-                Safety first
-              </h2>
-              <p className="mb-0 leading-relaxed text-gray-200">
-                {service.safetyNote}
-              </p>
-            </aside>
-
-            <section aria-labelledby="service-faq-heading">
-              <h2
-                id="service-faq-heading"
-                className="mb-6 text-2xl font-bold text-white sm:text-3xl"
-              >
-                Frequently asked questions
-              </h2>
-              <div className="space-y-3">
-                {service.faqs.map((faq) => (
-                  <details
-                    key={faq.question}
-                    className="group rounded-xl border border-[#ffd43b]/20 bg-[#111] p-4 open:border-[#ffd43b]/45 sm:p-5"
-                  >
-                    <summary className="cursor-pointer list-none pr-8 font-semibold text-white marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]">
-                      <span>{faq.question}</span>
-                      <span
-                        aria-hidden="true"
-                        className="float-right text-[#ffd43b] transition-transform group-open:rotate-45"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="mb-0 mt-3 leading-relaxed text-gray-300">
-                      {faq.answer}
-                    </p>
-                  </details>
-                ))}
-              </div>
-            </section>
-          </div>
-
-          <div className="mt-14 rounded-2xl border border-[#ffd43b]/25 bg-gradient-to-br from-[#17150d] to-[#101010] p-6 text-center sm:mt-16 sm:p-10">
-            <h2 className="mb-3 text-2xl font-bold text-white sm:text-3xl">
-              Keep learning with the community
-            </h2>
-            <p className="mx-auto mb-6 max-w-2xl leading-relaxed text-gray-300">
-              Join the DK &amp; SM Academy community to continue learning and
-              connect with other members.
-            </p>
-            <Link
-              href={siteConfig.communityUrl}
-              className="btn-primary w-full sm:w-auto"
+        <div className="site-container py-8 sm:py-10 lg:py-12">
+          <div className="mx-auto max-w-5xl">
+            <h2
+              id="service-faq-heading"
+              className="mb-1 text-2xl font-extrabold tracking-tight text-white sm:text-3xl"
             >
-              Join Our Community <span aria-hidden="true">→</span>
-            </Link>
+              Frequently <span className="text-[#ffd43b]">asked questions</span>
+            </h2>
+            <p className="mb-5 text-sm leading-relaxed text-gray-300 sm:text-base">
+              Find clear answers to common questions about{" "}
+              {service.title.toLowerCase()} with DK &amp; SM Academy.
+            </p>
+
+            <div className="space-y-2">
+              {service.faqs.map((faq) => (
+                <details
+                  key={faq.question}
+                  className="group rounded-xl border border-[#ffd43b]/35 bg-[#090909]/90 px-4 py-3 open:border-[#ffd43b]/60 sm:px-5 sm:py-3.5"
+                >
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-white marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] [&::-webkit-details-marker]:hidden">
+                    <span>{faq.question}</span>
+                    <span
+                      aria-hidden="true"
+                      className="relative shrink-0 text-2xl font-medium leading-none text-[#ffd43b]"
+                    >
+                      <span className="group-open:hidden">+</span>
+                      <span className="hidden group-open:inline">−</span>
+                    </span>
+                  </summary>
+                  <p className="mb-0 mt-3 border-t border-[#ffd43b]/15 pt-3 leading-relaxed text-gray-300">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </article>
   );
 }
