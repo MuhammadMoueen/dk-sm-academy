@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 
-const LINKEDIN_URL = "https://www.linkedin.com/";
+const LINKEDIN_URL = "https://www.linkedin.com/in/dk7869";
 
 const communityImages: Record<string, string> = {
   YouTube: "/images/community/youtube.png",
@@ -79,7 +79,7 @@ function CommunityCard({
   );
 
   const cardClassName =
-    "group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/25 bg-[#111] shadow-[0_12px_34px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/55 hover:shadow-[0_16px_40px_rgba(255,207,50,0.12)] motion-reduce:transform-none motion-reduce:transition-none";
+    "group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/25 bg-[#111]/90 shadow-[0_12px_34px_rgba(0,0,0,0.28)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/55 hover:shadow-[0_16px_40px_rgba(255,207,50,0.12)] motion-reduce:transform-none motion-reduce:transition-none";
 
   return href ? (
     <Link
@@ -101,8 +101,23 @@ export function CommunitySection() {
     <section
       id="community"
       aria-labelledby="community-heading"
-      className="scroll-mt-20 border-t border-[#ffd43b]/25 bg-[#080808] py-8 text-white sm:py-10 lg:py-10"
+      className="relative isolate scroll-mt-20 overflow-hidden border-t border-[#ffd43b]/25 bg-[#080808] py-8 text-white sm:py-10 lg:py-10"
     >
+      {/* Unique black-and-gold community background */}
+      <Image
+        src="/images/community-bg.png"
+        alt=""
+        fill
+        sizes="100vw"
+        className="pointer-events-none -z-20 object-cover object-center opacity-35"
+      />
+
+      {/* Dark overlay keeps text and screenshots readable */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#080808]/65 via-[#080808]/55 to-[#080808]/90"
+      />
+
       <div className="site-container">
         <header className="mb-7 max-w-3xl sm:mb-9">
           <span className="section-eyebrow">
