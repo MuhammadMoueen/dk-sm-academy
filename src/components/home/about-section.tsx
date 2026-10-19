@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,13 +18,13 @@ const features = [
     title: "Buy & Sell",
     description:
       "Get information about cryptocurrency buying and selling, subject to confirmed rates, availability, verification, and applicable rules.",
-    icon: "/images/a(1).png",
+    icon: "/images/first.png",
   },
   {
     title: "KYC Support",
     description:
       "Understand platform verification steps and requirements. Final approval is always decided by the relevant platform.",
-    icon: "/images/a(2).png",
+    icon: "/images/kyc.png",
   },
 ];
 
@@ -61,11 +60,10 @@ export default function AboutSection() {
 
       <div className="mx-auto grid min-h-[600px] max-w-[1440px] items-center gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.18fr_0.82fr] lg:gap-4 lg:px-16 lg:py-12">
         <div className="relative z-10 max-w-[760px]">
-
-            <span className="section-eyebrow">
-              <span aria-hidden="true">✦</span>
-               About DK &amp; SM Academy
-            </span>
+          <span className="section-eyebrow">
+            <span aria-hidden="true">✦</span>
+            About DK &amp; SM Academy
+          </span>
 
           <h2
             id="about-heading"
@@ -98,14 +96,14 @@ export default function AboutSection() {
                     : ""
                 }`}
               >
-                {/* Keep circle size; enlarge the icon inside */}
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ffcf32]/50 bg-black/55 p-1.5 transition duration-300 group-hover:border-[#ffcf32] group-hover:shadow-[0_0_24px_rgba(255,207,50,0.22)] motion-reduce:transition-none">
+                {/* Same circle size; larger icon inside */}
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#ffcf32]/50 bg-black/55 p-0.5 transition duration-300 group-hover:border-[#ffcf32] group-hover:shadow-[0_0_24px_rgba(255,207,50,0.22)] motion-reduce:transition-none">
                   <Image
                     src={feature.icon}
                     alt=""
-                    width={48}
-                    height={48}
-                    className="h-full w-full object-contain"
+                    width={56}
+                    height={56}
+                    className="h-full w-full scale-125 object-contain"
                   />
                 </div>
 
