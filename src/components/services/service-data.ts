@@ -15,6 +15,7 @@ export type Service = {
   description: string;
   image: string;
   imageAlt: string;
+  featureLabels?: string[];
   introduction: string;
   sections: ServiceContentSection[];
   safetyNote: string;
@@ -26,9 +27,10 @@ export const services: Service[] = [
     slug: "buy-sell",
     title: "Crypto & USDT Buy/Sell",
     description:
-      "Learn how to buy and sell cryptocurrencies and USDT with step-by-step guides, exchange information, and safety tips.",
+      "Learn how to buy, sell, and exchange crypto and USDT with practical guides, platform information, and essential safety tips.",
     image: "/images/service-buy-sell.png",
     imageAlt: "Cryptocurrency coins with exchange arrows",
+    featureLabels: ["Buy Crypto", "Sell USDT", "P2P Guides"],
     introduction:
       "Understand the basic steps involved in buying or selling digital assets. Our educational guides explain common exchange features, transaction checks, and ways to make more informed decisions.",
     sections: [

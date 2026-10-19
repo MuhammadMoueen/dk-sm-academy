@@ -10,11 +10,41 @@ export const siteConfig = {
     { label: "About", href: "/#about" },
     { label: "Services", href: "/#services" },
     { label: "Portfolio", href: "/#portfolio" },
-    { label: "Blog", href: "/blog" },
+    { label: "Blog", href: "/#blog" },
     { label: "Community", href: "/#community" },
     { label: "Contact", href: "/contact" },
   ],
   communityUrl: "/community",
+  communityPlatforms: [
+    {
+      name: "YouTube",
+      description:
+        "Watch educational videos, tutorials, and learning updates from the Academy.",
+      href: "https://www.youtube.com/@DKSMAcademy",
+      action: "Visit Channel",
+    },
+    {
+      name: "WhatsApp",
+      description:
+        "Follow Academy updates and community learning announcements on WhatsApp.",
+      href: "https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46",
+      action: "Join Channel",
+    },
+    {
+      name: "Telegram",
+      description:
+        "Connect with the Academy’s Telegram community and learning updates.",
+      href: "https://t.me/xhjkockklkmkkb",
+      action: "Join Telegram",
+    },
+    {
+      name: "More Channels",
+      description:
+        "A space for another official community platform once its details are configured.",
+      href: null,
+      action: "Coming Soon",
+    },
+  ],
   socialLinks: [
     { label: "WhatsApp", href: "#" },
     { label: "Telegram", href: "#" },

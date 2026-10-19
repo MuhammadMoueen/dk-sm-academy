@@ -79,7 +79,7 @@ export function HeroSection() {
       />
 
       <div className="site-container">
-        <div className="flex min-h-[650px] flex-col justify-center py-12 sm:min-h-[700px] sm:py-16 lg:min-h-[570px] lg:py-12">
+        <div className="flex min-h-[600px] flex-col justify-center py-8 sm:min-h-[640px] sm:py-10 lg:min-h-[520px] lg:py-10">
           <div className="max-w-[720px]">
             <span className="section-eyebrow">
               <span aria-hidden="true">✦</span>
@@ -101,7 +101,7 @@ export function HeroSection() {
 
             <div className="mt-7 flex flex-col gap-3 min-[420px]:flex-row">
               <Link
-                href="/community"
+                href="https://whatsapp.com/channel/0029Vb6gQ7m8vd1GGTKvAl46"
                 className="btn-primary w-full sm:w-auto"
               >
                 Join Our Community
@@ -109,7 +109,7 @@ export function HeroSection() {
               </Link>
 
               <Link
-                href="/portfolio"
+                href="https://youtu.be/OzplY_oLiAU"
                 className="btn-secondary w-full sm:w-auto"
               >
                 Explore Our Work

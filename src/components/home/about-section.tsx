@@ -33,7 +33,7 @@ export default function AboutSection() {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="relative isolate overflow-hidden bg-[#050505] text-white"
+      className="relative isolate overflow-hidden border-b border-[#ffcf32]/35 bg-[#050505] text-white"
     >
       <div
         aria-hidden="true"
@@ -58,7 +58,7 @@ export default function AboutSection() {
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-black/35 via-transparent to-black/20"
       />
 
-      <div className="mx-auto grid min-h-[600px] max-w-[1440px] items-center gap-8 px-6 py-14 sm:px-10 sm:py-16 lg:grid-cols-[1.18fr_0.82fr] lg:gap-4 lg:px-16 lg:py-12">
+      <div className="mx-auto grid max-w-[1440px] items-center gap-8 px-6 py-8 sm:px-10 sm:py-10 lg:grid-cols-[1.18fr_0.82fr] lg:gap-4 lg:px-16 lg:py-10">
         <div className="relative z-10 max-w-[760px]">
           <span className="section-eyebrow">
             <span aria-hidden="true">✦</span>
@@ -121,7 +121,7 @@ export default function AboutSection() {
             ))}
           </div>
 
-          <div className="mt-6">
+          <div className="mt-10">
             <Link
               href="/services"
               className="inline-flex min-h-12 items-center justify-center gap-3 rounded-lg bg-[#ffcf32] px-6 py-3 text-sm font-extrabold !text-black shadow-[0_8px_30px_rgba(255,207,50,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#ffda62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffcf32] focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none"

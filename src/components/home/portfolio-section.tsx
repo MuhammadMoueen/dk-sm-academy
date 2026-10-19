@@ -1,78 +1,68 @@
 import Link from "next/link";
+import { PortfolioCollection } from "@/components/portfolio/portfolio-collection";
+import { publishedPortfolioItems } from "@/features/portfolio/portfolio-data";
+import type { PortfolioItem } from "@/types/portfolio";
 
-const learningAreas = [
-  {
-    number: "01",
-    title: "Crypto foundations",
-    description:
-      "Explore educational guides that introduce digital assets, wallets, and blockchain concepts.",
-    href: "/services/buy-sell",
-  },
-  {
-    number: "02",
-    title: "Market literacy",
-    description:
-      "Build familiarity with market terminology, chart concepts, and risk-aware learning.",
-    href: "/services/trading",
-  },
-  {
-    number: "03",
-    title: "Digital skills",
-    description:
-      "Learn about structured courses, responsible content, and practical online skills.",
-    href: "/services/courses",
-  },
-];
+function PortfolioIntroduction({
+  fullPage = false,
+}: {
+  fullPage?: boolean;
+}) {
+  const Heading = fullPage ? "h1" : "h2";
 
-export function PortfolioSection() {
+  return (
+    <header className="mb-7 max-w-3xl sm:mb-9">
+      <span className="section-eyebrow">
+        <span aria-hidden="true">✦</span>
+        Client Portfolio
+      </span>
+      <Heading
+        id="portfolio-heading"
+        className="mb-3 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-tight tracking-[-0.04em] !text-white"
+      >
+        Real Deals. <span className="!text-[#ffd43b]">Real Experiences.</span>
+      </Heading>
+      <p className="max-w-2xl leading-relaxed text-gray-300">
+        {fullPage
+          ? "Read client feedback shared with DK & SM Academy. Portfolio entries are displayed after they have been reviewed and published."
+          : "A selection of client dealings and feedback shared with DK & SM Academy. Each published entry includes its transaction image and the client’s own review."}
+      </p>
+    </header>
+  );
+}
+
+export function PortfolioSection({
+  items = publishedPortfolioItems,
+  fullPage = false,
+}: {
+  items?: PortfolioItem[];
+  fullPage?: boolean;
+}) {
   return (
     <section
       id="portfolio"
       aria-labelledby="portfolio-heading"
-      className="scroll-mt-20 bg-[#080808] py-16 text-white sm:py-20 lg:py-24"
+      className={`scroll-mt-20 border-t border-[#ffd43b]/25 bg-[#080808] text-white ${
+        fullPage ? "min-h-[60vh] py-10 sm:py-12 lg:py-14" : "py-8 sm:py-10 lg:py-10"
+      }`}
     >
       <div className="site-container">
-        <header className="mb-8 max-w-3xl sm:mb-10">
-          <span className="section-eyebrow">
-            <span aria-hidden="true">✦</span>
-            Learning Portfolio
-          </span>
-          <h2
-            id="portfolio-heading"
-            className="mb-3 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-tight tracking-[-0.04em] text-white"
-          >
-            Explore our <span className="text-[#ffd43b]">learning areas</span>
-          </h2>
-          <p className="max-w-2xl leading-relaxed text-gray-300">
-            A look at the subjects and learning resources available through DK
-            &amp; SM Academy.
-          </p>
-        </header>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {learningAreas.map((area) => (
-            <article
-              key={area.number}
-              className="rounded-2xl border border-[#ffd43b]/20 bg-[#111] p-5 transition-colors hover:border-[#ffd43b]/50 sm:p-6"
+        <PortfolioIntroduction fullPage={fullPage} />
+        <PortfolioCollection
+          items={items}
+          previewWhenEmpty={!fullPage}
+          initialCount={fullPage ? 8 : 4}
+        />
+        {!fullPage && (
+          <div className="mt-7 flex justify-center">
+            <Link
+              href="/portfolio"
+              className="btn-secondary min-h-11 !text-[#ffd43b] hover:!text-[#ffe16a]"
             >
-              <p className="mb-5 text-sm font-bold tracking-[0.15em] text-[#ffd43b]">
-                {area.number}
-              </p>
-              <h3 className="mb-2 text-xl font-bold text-white">
-                {area.title}
-              </h3>
-              <p className="mb-5 text-sm leading-relaxed text-gray-300">
-                {area.description}
-              </p>
-              <Link
-                href={area.href}
-                className="inline-flex items-center gap-2 font-semibold text-[#ffd43b] hover:text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
-              >
-                Explore topic <span aria-hidden="true">→</span>
-              </Link>
-            </article>
-          ))}
-        </div>
+              View All Reviews <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

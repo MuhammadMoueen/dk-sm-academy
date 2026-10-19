@@ -47,7 +47,7 @@ function ServiceCard({
         }`}
       >
         <h3
-          className={`mb-2 font-bold leading-tight tracking-tight text-[#ffd43b] ${
+          className={`mb-2 font-bold leading-tight tracking-tight !text-[#ffd43b] ${
             featured ? "text-2xl sm:text-3xl" : "text-base sm:text-base"
           }`}
         >
@@ -64,9 +64,22 @@ function ServiceCard({
           {service.description}
         </p>
 
+        {featured && service.featureLabels && (
+          <ul className="mb-4 flex flex-wrap gap-2">
+            {service.featureLabels.map((label) => (
+              <li
+                key={label}
+                className="rounded-full border border-[#ffd43b]/35 bg-[#ffd43b]/5 px-2.5 py-1 text-[0.7rem] font-semibold leading-none text-[#ffd43b]"
+              >
+                {label}
+              </li>
+            ))}
+          </ul>
+        )}
+
         <Link
           href={`/services/${service.slug}`}
-          className="inline-flex items-center gap-2 rounded-sm font-semibold text-[#ffd43b] underline decoration-[#ffd43b]/70 underline-offset-4 transition-colors duration-200 hover:text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b0b0b]"
+          className="inline-flex items-center gap-2 rounded-sm font-semibold !text-[#ffd43b] underline decoration-[#ffd43b]/70 underline-offset-4 transition-colors duration-200 hover:!text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b0b0b]"
         >
           Explore <span aria-hidden="true">→</span>
         </Link>
@@ -84,7 +97,7 @@ export function ServicesSection({
     <section
       id="services"
       aria-labelledby="services-heading"
-      className="relative isolate overflow-hidden bg-[#080808] py-16 text-white sm:py-20 lg:py-24"
+      className="relative isolate overflow-hidden bg-[#080808] py-8 text-white sm:py-10 lg:py-10"
     >
       <Image
         src="/images/services-bg.png"

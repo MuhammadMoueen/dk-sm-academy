@@ -9,7 +9,7 @@ const quickLinks = [
   { label: "Our Services", href: "/#services" },
   { label: "Portfolio", href: "/#portfolio" },
   { label: "Community", href: "/#community" },
-  { label: "Blog", href: "/blog" },
+  { label: "Blog", href: "/#blog" },
 ];
 
 const services = [
@@ -28,12 +28,12 @@ const importantLinks = [
 ];
 
 const socials = [
-  { name: "YouTube",  href: "https://youtube.com/@dksmacademy?si=KRnAEWJxGs0SsMJR", icon: "youtube" },
+  { name: "YouTube",  href: "https://www.youtube.com/@DKSMAcademy", icon: "youtube" },
   { name: "Telegram", href: "https://t.me/xhjkockklkmkkb", icon: "telegram" },
   { name: "Facebook", href: "https://www.facebook.com/Dk7869", icon: "facebook" },
-  { name: "Instagram",href: "https://www.instagram.com/dksmacademyexchange?vrfl=bjJvZjE5amV0MHYw", icon: "instagram" },
+  { name: "Instagram",href: "https://www.instagram.com/dksmacadem786", icon: "instagram" },
   { name: "X",        href: "https://x.com/dksmacademy786", icon: "x" },
-  { name: "LinkedIn", href: "https://www.linkedin.com/company/dk-sm-academy", icon: "linkedin" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/dk7869", icon: "linkedin" },
 ];
 
 function SocialIcon({ name }: { name: string }) {
