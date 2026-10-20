@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { ArticleCollection } from "@/components/blog/article-collection";
@@ -59,7 +58,7 @@ export async function BlogSection() {
         <div className="mt-7 flex justify-center">
           <Link
             href="/blog"
-            className="btn-secondary min-h-11 !text-[#ffd43b] hover:!text-[#ffe16a]"
+            className="site-btn-primary inline-flex"
           >
             View All Articles <span aria-hidden="true">→</span>
           </Link>

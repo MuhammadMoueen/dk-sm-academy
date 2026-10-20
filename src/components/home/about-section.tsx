@@ -124,7 +124,7 @@ export default function AboutSection() {
           <div className="mt-10">
             <Link
               href="/services"
-              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-lg bg-[#ffcf32] px-6 py-3 text-sm font-extrabold !text-black shadow-[0_8px_30px_rgba(255,207,50,0.18)] transition duration-300 hover:-translate-y-0.5 hover:bg-[#ffda62] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffcf32] focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none"
+              className="site-btn-primary inline-flex"
             >
               Explore Our Services
               <span aria-hidden="true">→</span>

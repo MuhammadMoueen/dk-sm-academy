@@ -11,10 +11,10 @@ function ServiceCard({
 }) {
   return (
     <article
-      className={`group relative isolate flex flex-col justify-center overflow-hidden rounded-2xl border bg-[#0b0b0b] transition duration-300 motion-reduce:transition-none ${
+      className={`group relative isolate flex flex-col overflow-hidden rounded-2xl border bg-[#0b0b0b] transition duration-300 motion-reduce:transition-none ${
         featured
           ? "min-h-[300px] border-[#ffd43b]/80 p-6 shadow-[0_0_28px_rgba(255,212,59,0.12)] sm:min-h-[330px] sm:p-7 lg:min-h-[390px] lg:p-8"
-          : "min-h-[230px] border-[#ffd43b]/35 p-5 hover:border-[#ffd43b]/70 sm:min-h-[230px] sm:p-5 lg:min-h-[184px] lg:p-4"
+          : "min-h-[230px] justify-center border-[#ffd43b]/35 p-5 hover:border-[#ffd43b]/70 sm:min-h-[230px] sm:p-5 lg:min-h-[184px] lg:p-4"
       }`}
     >
       <div
@@ -42,8 +42,10 @@ function ServiceCard({
       />
 
       <div
-        className={`relative max-w-[70%] ${
-          featured ? "sm:max-w-[62%]" : "sm:max-w-[70%]"
+        className={`relative z-10 max-w-[70%] ${
+          featured
+            ? "my-auto translate-y-[-5px] sm:max-w-[68%]"
+            : "sm:max-w-[70%]"
         }`}
       >
         <h3
@@ -77,12 +79,14 @@ function ServiceCard({
           </ul>
         )}
 
-        <Link
-          href={`/services/${service.slug}`}
-          className="inline-flex items-center gap-2 rounded-sm font-semibold !text-[#ffd43b] underline decoration-[#ffd43b]/70 underline-offset-4 transition-colors duration-200 hover:!text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0b0b0b]"
-        >
-          Explore <span aria-hidden="true">→</span>
-        </Link>
+        <div className={featured ? "mt-5 sm:mt-6" : ""}>
+          <Link
+            href={`/services/${service.slug}`}
+            className="site-btn-primary inline-flex w-fit"
+          >
+            Explore <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </article>
   );

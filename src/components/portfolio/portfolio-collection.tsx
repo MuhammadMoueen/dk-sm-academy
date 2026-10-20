@@ -164,7 +164,7 @@ export function PortfolioCollection({
             onClick={() =>
               setVisibleCount((count) => count + initialCount)
             }
-            className="btn-secondary min-h-11 !text-[#ffd43b] hover:!text-[#ffe16a]"
+            className="site-btn-primary inline-flex"
           >
             Load More Reviews <span aria-hidden="true">↓</span>
           </button>

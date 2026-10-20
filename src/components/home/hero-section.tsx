@@ -103,7 +103,7 @@ export function HeroSection() {
             <div className="mt-7 flex flex-col gap-3 min-[420px]:flex-row">
               <Link
                 href={siteConfig.communityUrl}
-                className="btn-primary w-full sm:w-auto"
+                className="site-btn-primary inline-flex w-full sm:w-auto"
               >
                 Join Our Community
                 <span aria-hidden="true">→</span>
@@ -111,7 +111,7 @@ export function HeroSection() {
 
               <Link
                 href="https://youtu.be/OzplY_oLiAU"
-                className="btn-secondary w-full sm:w-auto"
+                className="site-btn-primary inline-flex w-full sm:w-auto"
               >
                 Explore Our Work
                 <span

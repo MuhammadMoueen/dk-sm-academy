@@ -66,7 +66,7 @@ export function MobileNavigation() {
             <Link
               href={siteConfig.communityUrl}
               onClick={() => setIsOpen(false)}
-              className="btn-primary mt-2 w-full"
+              className="site-btn-primary mt-2 inline-flex w-full"
             >
               Join Community <span aria-hidden="true">→</span>
             </Link>

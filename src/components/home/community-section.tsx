@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
@@ -47,7 +46,7 @@ function CommunityCard({
       <CommunityImage name={name} image={image} />
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <h3 className="mb-2 text-xl font-bold text-[#ffd43b]">
+        <h3 className="mb-2 text-xl font-bold !text-[#FFD43B]">
           {name}
         </h3>
 
@@ -56,11 +55,8 @@ function CommunityCard({
         </p>
 
         <span
-          className={`inline-flex min-h-10 w-fit items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
-            href
-              ? "border-[#ffd43b]/45 text-[#ffd43b] group-hover:border-[#ffd43b] group-hover:text-[#ffe16a]"
-              : "border-white/15 text-gray-400"
-          }`}
+          aria-disabled={href ? undefined : true}
+          className="site-btn-primary inline-flex w-fit"
         >
           {action}
 
@@ -108,7 +104,6 @@ export function CommunitySection({ page = false }: { page?: boolean }) {
           : "py-8 sm:py-10 lg:py-10"
       }`}
     >
-      {/* Community background image */}
       <Image
         src="/images/community-bg.png"
         alt=""
@@ -117,14 +112,15 @@ export function CommunitySection({ page = false }: { page?: boolean }) {
         className="pointer-events-none -z-20 object-cover object-center opacity-35"
       />
 
-      {/* Dark overlay for readability */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-[#080808]/65 via-[#080808]/55 to-[#080808]/90"
       />
 
       <div className="site-container">
-        <header className={`max-w-3xl ${page ? "mb-9 sm:mb-12" : "mb-7 sm:mb-9"}`}>
+        <header
+          className={`max-w-3xl ${page ? "mb-9 sm:mb-12" : "mb-7 sm:mb-9"}`}
+        >
           <span className="section-eyebrow">
             <span aria-hidden="true">✦</span>
             {page ? "Official Community" : "Learn Together"}
@@ -159,10 +155,7 @@ export function CommunitySection({ page = false }: { page?: boolean }) {
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {siteConfig.communityPlatforms.map((platform) => (
-            <CommunityCard
-              key={platform.name}
-              platform={platform}
-            />
+            <CommunityCard key={platform.name} platform={platform} />
           ))}
         </div>
       </div>

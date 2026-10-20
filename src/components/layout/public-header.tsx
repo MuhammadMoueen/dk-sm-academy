@@ -45,10 +45,10 @@ export function PublicHeader() {
                   (pathname === item.href ||
                     pathname.startsWith(`${item.href}/`));
 
-                const className = `relative whitespace-nowrap py-6 text-sm font-semibold transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:bg-[#f5c842] after:transition-transform after:duration-200 ${
+                const className = `relative whitespace-nowrap py-6 text-sm font-semibold transition-colors duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:bg-[#ffd43b] after:transition-transform after:duration-200 ${
                   active
-                    ? "text-[#f5c842] after:scale-x-100"
-                    : "text-gray-200 after:scale-x-0 hover:text-[#f5c842] hover:after:scale-x-100"
+                    ? "text-[#ffd43b] after:scale-x-100"
+                    : "text-gray-200 after:scale-x-0 hover:text-[#ffd43b] hover:after:scale-x-100"
                 }`;
 
                 return isSectionLink ? (
@@ -75,15 +75,9 @@ export function PublicHeader() {
 
           <Link
             href={siteConfig.communityUrl}
-            className="hidden min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)] lg:inline-flex"
+            className="site-btn-primary hidden lg:inline-flex"
           >
-            <span className="!text-black">Join Our Community</span>
-            <span
-              aria-hidden="true"
-              className="text-lg leading-none !text-black"
-            >
-              →
-            </span>
+            Join Our Community <span aria-hidden="true">→</span>
           </Link>
 
           <div className="lg:hidden">

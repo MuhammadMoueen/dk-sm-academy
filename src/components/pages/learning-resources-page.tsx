@@ -73,9 +73,9 @@ export async function LearningResourcesPage() {
                 <li key={`${category.title}-${link.href}`}>
                   <Link
                     href={link.href}
-                    className="inline-flex min-h-10 items-center rounded-lg border border-[#ffd43b]/35 px-3 py-2 text-sm font-semibold text-[#ffd43b] transition-colors hover:border-[#ffd43b] hover:text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+                    className="site-btn-secondary inline-flex"
                   >
-                    {link.label} <span className="ml-2" aria-hidden="true">→</span>
+                    {link.label} <span aria-hidden="true">→</span>
                   </Link>
                 </li>
               ))}

@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
+import { BrandLoader } from "@/components/layout/brand-loader";
 import { getAdminSession } from "@/lib/auth";
 
-export default async function AdminLoginPage() {
+async function AdminLoginContent() {
   await connection();
   if (await getAdminSession()) redirect("/admin/dashboard");
 
@@ -25,5 +27,13 @@ export default async function AdminLoginPage() {
         <AdminLoginForm />
       </section>
     </main>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<BrandLoader />}>
+      <AdminLoginContent />
+    </Suspense>
   );
 }

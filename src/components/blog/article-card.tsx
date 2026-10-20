@@ -34,7 +34,7 @@ export function ArticleCard({
         {article ? (
           <Link
             href={`/blog/${article.slug}`}
-            className="inline-flex min-h-10 w-fit items-center gap-2 font-semibold !text-[#ffd43b] underline decoration-[#ffd43b]/70 underline-offset-4 transition-colors hover:!text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] motion-reduce:transition-none"
+            className="site-btn-primary inline-flex w-fit"
           >
             Read Article <span aria-hidden="true">→</span>
           </Link>

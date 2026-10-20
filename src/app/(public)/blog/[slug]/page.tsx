@@ -68,7 +68,7 @@ async function PublishedArticle({ params }: ArticlePageProps) {
           <header className="mb-8">
             <Link
               href="/blog"
-              className="mb-5 inline-flex min-h-10 items-center font-semibold !text-[#ffd43b] underline underline-offset-4 hover:!text-[#ffe16a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+              className="site-btn-secondary mb-5 inline-flex"
             >
               ← All articles
             </Link>

@@ -84,7 +84,7 @@ export async function PortfolioSection({
           <div className="mt-7 flex justify-center">
             <Link
               href="/portfolio"
-              className="btn-secondary min-h-11 !text-[#ffd43b] hover:!text-[#ffe16a]"
+              className="site-btn-primary inline-flex"
             >
               View All Reviews <span aria-hidden="true">→</span>
             </Link>

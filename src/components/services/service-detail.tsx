@@ -37,7 +37,7 @@ export function ServiceDetail({ service }: { service: Service }) {
             </p>
             <Link
               href={siteConfig.communityUrl}
-              className="btn-primary w-full sm:w-auto"
+              className="site-btn-primary inline-flex w-full sm:w-auto"
             >
               Join Our Community <span aria-hidden="true">→</span>
             </Link>

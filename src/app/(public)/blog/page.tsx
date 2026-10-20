@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ArticleCollection } from "@/components/blog/article-collection";
+import { BrandLoader } from "@/components/layout/brand-loader";
 import { getPublishedArticles } from "@/features/articles/articles";
 import { connection } from "next/server";
 
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BlogPage() {
+async function BlogContent() {
   await connection();
   const articles = await getPublishedArticles();
 
@@ -46,5 +48,13 @@ export default async function BlogPage() {
         <ArticleCollection articles={articles} initialCount={12} />
       </div>
     </section>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<BrandLoader />}>
+      <BlogContent />
+    </Suspense>
   );
 }

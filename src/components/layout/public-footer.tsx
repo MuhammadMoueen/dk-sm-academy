@@ -160,12 +160,9 @@ export function PublicFooter() {
 
             <Link
               href={siteConfig.communityUrl}
-              className="mt-6 inline-flex min-h-[48px] items-center justify-center gap-3 rounded-xl bg-[#f5c842] px-6 py-3 text-sm font-bold !text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ffda55] hover:!text-black hover:shadow-[0_6px_24px_rgba(245,200,66,0.3)]"
+              className="site-btn-primary mt-6 inline-flex"
             >
-              <span className="!text-black">Join Our Community</span>
-              <span aria-hidden="true" className="text-lg leading-none !text-black">
-                →
-              </span>
+              Join Our Community <span aria-hidden="true">→</span>
             </Link>
 
             <div className="mt-6 flex flex-wrap gap-1.5">

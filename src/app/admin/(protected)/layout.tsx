@@ -1,11 +1,13 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import type { ReactNode } from "react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { BrandLoader } from "@/components/layout/brand-loader";
 import { requireAdmin } from "@/lib/auth";
 
-export default async function ProtectedAdminLayout({
+async function ProtectedAdminContent({
   children,
 }: Readonly<{ children: ReactNode }>) {
   await connection();
@@ -22,5 +24,15 @@ export default async function ProtectedAdminLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ProtectedAdminLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
+  return (
+    <Suspense fallback={<BrandLoader />}>
+      <ProtectedAdminContent>{children}</ProtectedAdminContent>
+    </Suspense>
   );
 }
