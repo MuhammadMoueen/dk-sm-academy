@@ -22,7 +22,7 @@ export function ArticleCard({
             {article.category}
           </span>
         )}
-        <h3 className="mb-2 text-lg font-bold leading-snug !text-white sm:text-xl">
+        <h3 className="mb-2 text-lg font-bold leading-snug !text-[#ffd43b] sm:text-xl">
           {article?.title ?? "Article title"}
         </h3>
         <p className="mb-5 flex-1 text-sm leading-relaxed text-gray-300">

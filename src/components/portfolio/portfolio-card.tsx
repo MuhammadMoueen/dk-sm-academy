@@ -103,7 +103,7 @@ export function PortfolioCard({
         <ClientAvatar item={item} />
 
         <div className="min-w-0 flex-1">
-          <h3 className="mb-1 truncate text-lg font-bold text-white">
+          <h3 className="mb-1 truncate text-lg font-bold text-[#ffd43b]">
             {item?.clientName ?? "Client name"}
           </h3>
 
