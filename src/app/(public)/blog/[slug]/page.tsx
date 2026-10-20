@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleContent } from "@/components/blog/article-content";
 import { ArticleThumbnail } from "@/components/blog/article-thumbnail";
+import { BrandLoader } from "@/components/layout/brand-loader";
 import { getPublishedArticleBySlug } from "@/features/articles/articles";
 
 type ArticlePageProps = {
@@ -111,26 +112,9 @@ async function PublishedArticle({ params }: ArticlePageProps) {
   );
 }
 
-function ArticleLoadingState() {
-  return (
-    <div
-      aria-label="Loading article"
-      className="min-h-[60vh] border-t border-[#ffd43b]/25 bg-[#080808] py-10 sm:py-12"
-    >
-      <div className="site-container">
-        <div className="mx-auto max-w-4xl animate-pulse">
-          <div className="mb-4 h-10 w-2/3 rounded bg-white/10" />
-          <div className="mb-8 h-5 w-1/3 rounded bg-white/10" />
-          <div className="aspect-[16/9] rounded-2xl bg-white/10" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ArticlePage({ params }: ArticlePageProps) {
   return (
-    <Suspense fallback={<ArticleLoadingState />}>
+    <Suspense fallback={<BrandLoader />}>
       <PublishedArticle params={params} />
     </Suspense>
   );

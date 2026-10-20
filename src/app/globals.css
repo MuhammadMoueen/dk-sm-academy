@@ -167,6 +167,23 @@ p {
   text-transform: uppercase;
 }
 
+.brand-loader-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 212, 59, 0.32);
+  border-top-color: var(--accent);
+  border-right-color: rgba(255, 212, 59, 0.82);
+  border-radius: 9999px;
+  box-shadow: 0 0 14px rgba(255, 212, 59, 0.14);
+  animation: brand-loader-rotation 1.15s linear infinite;
+}
+
+@keyframes brand-loader-rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .gold-text {
   color: var(--accent);
 }
