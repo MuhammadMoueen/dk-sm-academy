@@ -1,30 +1,114 @@
-import type { Article } from "@/types/article";
+import "server-only";
 
-export const articles: Article[] = [];
+import { getDb } from "@/lib/db";
+import type { Article, ArticleContentBlock } from "@/types/article";
+import type { ContentStatus } from "@/types/common";
 
-export function getPublishedArticles() {
-  return articles
-    .filter((article) => article.status === "published")
-    .slice()
-    .sort((first, second) => {
-      if (
-        first.displayOrder !== undefined &&
-        second.displayOrder !== undefined &&
-        first.displayOrder !== second.displayOrder
-      ) {
-        return first.displayOrder - second.displayOrder;
-      }
+type ArticleRow = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: ArticleContentBlock[];
+  thumbnail_url: string;
+  category: string | null;
+  display_order: number | null;
+  status: ContentStatus;
+  published_at: Date | null;
+  updated_at: Date;
+  seo_title: string | null;
+  seo_description: string | null;
+};
 
-      if (first.displayOrder !== undefined) return -1;
-      if (second.displayOrder !== undefined) return 1;
-
-      return (
-        new Date(second.publishedAt).getTime() -
-        new Date(first.publishedAt).getTime()
-      );
-    });
+function mapArticle(row: ArticleRow): Article {
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    excerpt: row.excerpt,
+    content: row.content,
+    thumbnailUrl: row.thumbnail_url,
+    category: row.category ?? undefined,
+    displayOrder: row.display_order ?? undefined,
+    status: row.status,
+    publishedAt: row.published_at?.toISOString() ?? "",
+    updatedAt: row.updated_at.toISOString(),
+    seoTitle: row.seo_title ?? undefined,
+    seoDescription: row.seo_description ?? undefined,
+  };
 }
 
-export function getPublishedArticleBySlug(slug: string) {
-  return getPublishedArticles().find((article) => article.slug === slug);
+const articleColumns = `
+  id, title, slug, excerpt, content, thumbnail_url, category, display_order,
+  status, published_at, updated_at, seo_title, seo_description
+`;
+
+export async function getPublishedArticles() {
+  const { rows } = await getDb().query<ArticleRow>(
+    `SELECT ${articleColumns}
+     FROM articles
+     WHERE status = 'published'
+     ORDER BY display_order ASC NULLS LAST, published_at DESC, created_at DESC`,
+  );
+  return rows.map(mapArticle);
+}
+
+export async function getPublishedArticleBySlug(slug: string) {
+  const { rows } = await getDb().query<ArticleRow>(
+    `SELECT ${articleColumns}
+     FROM articles
+     WHERE slug = $1 AND status = 'published'
+     LIMIT 1`,
+    [slug],
+  );
+  return rows[0] ? mapArticle(rows[0]) : undefined;
+}
+
+export async function getArticleById(id: string) {
+  const { rows } = await getDb().query<ArticleRow>(
+    `SELECT ${articleColumns} FROM articles WHERE id = $1`,
+    [id],
+  );
+  return rows[0] ? mapArticle(rows[0]) : undefined;
+}
+
+export async function listArticles({
+  search = "",
+  status,
+  limit = 25,
+  offset = 0,
+}: {
+  search?: string;
+  status?: ContentStatus;
+  limit?: number;
+  offset?: number;
+} = {}) {
+  const { rows } = await getDb().query<ArticleRow>(
+    `SELECT ${articleColumns}
+     FROM articles
+     WHERE ($1::text = '' OR title ILIKE '%' || $1 || '%')
+       AND ($2::text IS NULL OR status = $2)
+     ORDER BY updated_at DESC
+     LIMIT $3 OFFSET $4`,
+    [search, status ?? null, Math.min(limit, 100), Math.max(0, offset)],
+  );
+  return rows.map(mapArticle);
+}
+
+export async function getArticleCounts() {
+  const { rows } = await getDb().query<{
+    total: string;
+    published: string;
+    draft: string;
+  }>(
+    `SELECT COUNT(*)::text AS total,
+       COUNT(*) FILTER (WHERE status = 'published')::text AS published,
+       COUNT(*) FILTER (WHERE status = 'draft')::text AS draft
+     FROM articles`,
+  );
+  return {
+    total: Number(rows[0]?.total ?? 0),
+    published: Number(rows[0]?.published ?? 0),
+    draft: Number(rows[0]?.draft ?? 0),
+  };
 }

@@ -6,6 +6,7 @@ import { ArticleContent } from "@/components/blog/article-content";
 import { ArticleThumbnail } from "@/components/blog/article-thumbnail";
 import { BrandLoader } from "@/components/layout/brand-loader";
 import { getPublishedArticleBySlug } from "@/features/articles/articles";
+import { connection } from "next/server";
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -14,8 +15,9 @@ type ArticlePageProps = {
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
+  await connection();
   const { slug } = await params;
-  const article = getPublishedArticleBySlug(slug);
+  const article = await getPublishedArticleBySlug(slug);
 
   if (!article) {
     return {
@@ -51,8 +53,9 @@ export async function generateMetadata({
 }
 
 async function PublishedArticle({ params }: ArticlePageProps) {
+  await connection();
   const { slug } = await params;
-  const article = getPublishedArticleBySlug(slug);
+  const article = await getPublishedArticleBySlug(slug);
 
   if (!article) {
     notFound();

@@ -74,6 +74,8 @@ export function PortfolioCard({
   item?: PortfolioItem;
   preview?: boolean;
 }) {
+  const rating = item?.rating ?? 5;
+
   return (
     <article className="group relative flex min-w-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/35 bg-[#111]/90 p-3 shadow-[0_12px_34px_rgba(0,0,0,0.32)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/70 hover:shadow-[0_16px_40px_rgba(255,207,50,0.12)] motion-reduce:transform-none motion-reduce:transition-none sm:p-4">
       {/* Transaction screenshot */}
@@ -103,9 +105,21 @@ export function PortfolioCard({
         <ClientAvatar item={item} />
 
         <div className="min-w-0 flex-1">
-          <h3 className="mb-1 truncate text-lg font-bold text-[#ffd43b]">
-            {item?.clientName ?? "Client name"}
-          </h3>
+          <div className="flex min-w-0 items-start gap-1.5">
+            <h3 className="min-w-0 break-words text-base font-bold leading-snug text-[#ffd43b] sm:text-lg">
+              {item?.clientName ?? "Client name"}
+            </h3>
+            {item?.isVerified && (
+              <span
+                role="img"
+                aria-label="Verified Client"
+                title="Verified Client"
+                className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#ffd43b]/70 text-xs font-bold text-[#ffd43b]"
+              >
+                ✓
+              </span>
+            )}
+          </div>
 
           {item ? (
             <time
@@ -127,10 +141,25 @@ export function PortfolioCard({
       {/* Client review */}
       <div className="mt-3 flex-1 rounded-xl border border-[#ffd43b]/10 bg-white/[0.02] p-3">
         <div
-          aria-hidden="true"
-          className="mb-2 text-lg leading-none tracking-[0.15em] text-[#ffd43b]"
+          role="img"
+          aria-label={`Rated ${rating.toFixed(1)} out of 5`}
+          className="mb-2 flex gap-0.5 text-lg leading-none text-gray-600"
         >
-          ★★★★★
+          {Array.from({ length: 5 }, (_, index) => {
+            const fill = Math.max(0, Math.min(1, rating - index)) * 100;
+            return (
+              <span key={index} className="relative">
+                ★
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 overflow-hidden text-[#ffd43b]"
+                  style={{ width: `${fill}%` }}
+                >
+                  ★
+                </span>
+              </span>
+            );
+          })}
         </div>
 
         <p className="text-sm leading-relaxed text-gray-300">

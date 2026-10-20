@@ -6,6 +6,9 @@ export interface PortfolioItem {
   clientImage: string;
   transactionImage: string;
   review: string;
-  createdAt: string;
+  rating: number;
+  isVerified: boolean;
   status: ContentStatus;
+  createdAt: string;
+  updatedAt: string;
 }

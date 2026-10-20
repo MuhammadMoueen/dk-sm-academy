@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { ArticleCollection } from "@/components/blog/article-collection";
 import {
   ContentPage,
@@ -45,8 +46,9 @@ const resourceCategories = [
   },
 ];
 
-export function LearningResourcesPage() {
-  const articles = getPublishedArticles();
+export async function LearningResourcesPage() {
+  await connection();
+  const articles = await getPublishedArticles();
 
   return (
     <ContentPage
@@ -84,9 +86,9 @@ export function LearningResourcesPage() {
 
       <ContentSection title="Published articles, guides, and videos">
         <p>
-          Published written articles appear here when available. There are no
-          published articles in the current site data. No separate video or
-          downloadable learning library is currently configured.
+          {articles.length
+            ? "Explore the educational articles currently published by the Academy."
+            : "There are no published articles yet. No separate video or downloadable learning library is currently configured."}
         </p>
         <ArticleCollection articles={articles} initialCount={8} />
         <p>

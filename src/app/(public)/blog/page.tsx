@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArticleCollection } from "@/components/blog/article-collection";
 import { getPublishedArticles } from "@/features/articles/articles";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "Latest Articles | DK & SM Academy",
@@ -15,8 +16,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogPage() {
-  const articles = getPublishedArticles();
+export default async function BlogPage() {
+  await connection();
+  const articles = await getPublishedArticles();
 
   return (
     <section

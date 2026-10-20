@@ -5,8 +5,10 @@ import { BlogSection } from "@/components/blog/blog-section";
 import { CommunitySection } from "@/components/home/community-section";
 import { PortfolioSection } from "@/components/home/portfolio-section";
 import { ServicesSection } from "@/components/services/services-section";
+import { connection } from "next/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  await connection();
   return (
     <div>
       <div id="home" className="scroll-mt-20">

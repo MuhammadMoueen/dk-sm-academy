@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PortfolioCollection } from "@/components/portfolio/portfolio-collection";
-import { publishedPortfolioItems } from "@/features/portfolio/portfolio-data";
+import { getPublishedPortfolioItems } from "@/features/portfolio/portfolio-data";
 import type { PortfolioItem } from "@/types/portfolio";
 
 function PortfolioIntroduction({
@@ -36,13 +36,15 @@ function PortfolioIntroduction({
   );
 }
 
-export function PortfolioSection({
-  items = publishedPortfolioItems,
+export async function PortfolioSection({
+  items,
   fullPage = false,
 }: {
   items?: PortfolioItem[];
   fullPage?: boolean;
 }) {
+  const portfolioItems = items ?? (await getPublishedPortfolioItems());
+
   return (
     <section
       id="portfolio"
@@ -73,7 +75,7 @@ export function PortfolioSection({
         <PortfolioIntroduction fullPage={fullPage} />
 
         <PortfolioCollection
-          items={items}
+          items={portfolioItems}
           previewWhenEmpty={!fullPage}
           initialCount={fullPage ? 8 : 4}
         />

@@ -4,7 +4,9 @@ import Link from "next/link";
 import { ArticleCollection } from "@/components/blog/article-collection";
 import { getPublishedArticles } from "@/features/articles/articles";
 
-export function BlogSection() {
+export async function BlogSection() {
+  const articles = await getPublishedArticles();
+
   return (
     <section
       id="blog"
@@ -49,7 +51,7 @@ export function BlogSection() {
         </header>
 
         <ArticleCollection
-          articles={getPublishedArticles().slice(0, 4)}
+          articles={articles.slice(0, 4)}
           homepage
           initialCount={4}
         />
