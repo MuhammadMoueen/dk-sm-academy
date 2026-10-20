@@ -3,8 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 
-const LINKEDIN_URL = "https://www.linkedin.com/in/dk7869";
-
 const communityImages: Record<string, string> = {
   YouTube: "/images/community/youtube.png",
   WhatsApp: "/images/community/whatsapp.png",
@@ -41,15 +39,7 @@ function CommunityCard({
 }: {
   platform: (typeof siteConfig.communityPlatforms)[number];
 }) {
-  const isLinkedIn = platform.name === "More Channels";
-  const name = isLinkedIn ? "LinkedIn" : platform.name;
-
-  const description = isLinkedIn
-    ? "Connect with DK & SM Academy on LinkedIn for professional updates, educational content, and community news."
-    : platform.description;
-
-  const href = isLinkedIn ? LINKEDIN_URL : platform.href;
-  const action = isLinkedIn ? "Visit LinkedIn" : platform.action;
+  const { name, description, href, action } = platform;
   const image = communityImages[name];
 
   const content = (
@@ -105,12 +95,18 @@ function CommunityCard({
   );
 }
 
-export function CommunitySection() {
+export function CommunitySection({ page = false }: { page?: boolean }) {
+  const Heading = page ? "h1" : "h2";
+
   return (
     <section
       id="community"
       aria-labelledby="community-heading"
-      className="relative isolate scroll-mt-20 overflow-hidden border-t border-[#ffd43b]/25 bg-[#080808] py-8 text-white sm:py-10 lg:py-10"
+      className={`relative isolate scroll-mt-20 overflow-hidden border-t border-[#ffd43b]/25 bg-[#080808] text-white ${
+        page
+          ? "min-h-[calc(100vh-72px)] py-12 sm:py-16 lg:py-20"
+          : "py-8 sm:py-10 lg:py-10"
+      }`}
     >
       {/* Community background image */}
       <Image
@@ -128,23 +124,36 @@ export function CommunitySection() {
       />
 
       <div className="site-container">
-        <header className="mb-7 max-w-3xl sm:mb-9">
+        <header className={`max-w-3xl ${page ? "mb-9 sm:mb-12" : "mb-7 sm:mb-9"}`}>
           <span className="section-eyebrow">
             <span aria-hidden="true">✦</span>
-            Learn Together
+            {page ? "Official Community" : "Learn Together"}
           </span>
 
-          <h2
+          <Heading
             id="community-heading"
-            className="mb-3 text-[clamp(2rem,4vw,3.25rem)] font-extrabold leading-tight tracking-[-0.04em] text-white"
+            className={`mb-3 font-extrabold leading-tight tracking-[-0.04em] text-white ${
+              page
+                ? "text-[clamp(2.25rem,5vw,3.75rem)]"
+                : "text-[clamp(2rem,4vw,3.25rem)]"
+            }`}
           >
-            Grow with the{" "}
-            <span className="text-[#ffd43b]">Community</span>
-          </h2>
+            {page ? (
+              <>
+                Learn, connect, and grow with the{" "}
+                <span className="text-[#ffd43b]">community</span>
+              </>
+            ) : (
+              <>
+                Grow with the <span className="text-[#ffd43b]">Community</span>
+              </>
+            )}
+          </Heading>
 
           <p className="max-w-2xl leading-relaxed text-gray-300">
-            Follow DK &amp; SM Academy on your preferred platform to learn,
-            connect, and keep up with new educational resources.
+            {page
+              ? "Join the DK & SM Academy community to explore educational topics, connect with others, and follow updates across our official platforms."
+              : "Follow DK & SM Academy on your preferred platform to learn, connect, and keep up with new educational resources."}
           </p>
         </header>
 

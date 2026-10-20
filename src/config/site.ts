@@ -38,11 +38,11 @@ export const siteConfig = {
       action: "Join Telegram",
     },
     {
-      name: "More Channels",
+      name: "LinkedIn",
       description:
-        "A space for another official community platform once its details are configured.",
-      href: null,
-      action: "Coming Soon",
+        "Connect with DK & SM Academy on LinkedIn for professional updates, educational content, and community news.",
+      href: "https://www.linkedin.com/in/dk7869",
+      action: "Visit LinkedIn",
     },
   ],
   socialLinks: [

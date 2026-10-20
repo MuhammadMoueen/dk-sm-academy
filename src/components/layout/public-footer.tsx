@@ -6,10 +6,11 @@ const currentYear = new Date().getFullYear();
 
 const quickLinks = [
   { label: "Home", href: "/#home" },
-  { label: "About Us", href: "/#about" },
+  { label: "About Academy", href: "/about" },
   { label: "Our Services", href: "/#services" },
   { label: "Portfolio", href: "/#portfolio" },
-  { label: "Community", href: "/#community" },
+  { label: "Community", href: "/community" },
+  { label: "Learning Resources", href: "/learning-resources" },
   { label: "Blog", href: "/#blog" },
 ];
 
@@ -18,7 +19,7 @@ const services = [
   { label: "Airdrops", href: "/services/airdrops" },
   { label: "Exchange Campaigns", href: "/services/exchange-campaigns" },
   { label: "Market Analysis", href: "/services/trading" },
-  { label: "Learning Resources", href: "/services/courses" },
+  { label: "Crypto & Social Media Courses", href: "/services/courses" },
   { label: "Community Support", href: "/community" },
 ];
 
