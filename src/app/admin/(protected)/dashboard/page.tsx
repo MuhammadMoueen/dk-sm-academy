@@ -4,6 +4,7 @@ import { getArticleCounts } from "@/features/articles/articles";
 import { getPortfolioCounts } from "@/features/portfolio/portfolio-data";
 import { getDb } from "@/lib/db";
 import { UserGrowthChart } from "@/components/admin/user-growth-chart";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 
 function SummaryCard({
   label,
@@ -75,29 +76,26 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6 sm:space-y-7">
-      <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#ffe49a]">
-            Admin dashboard
-          </p>
-          <h1 className="mb-0 text-3xl font-extrabold sm:text-4xl">
-            Dashboard <span className="text-[#ffd43b]">Overview</span>
-          </h1>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/admin/articles/new" className="btn-primary min-h-11 !rounded-lg">
-            <span aria-hidden="true" className="mr-2 text-lg">+</span>
-            Create Article
-          </Link>
-          <Link
-            href="/admin/portfolio/new"
-            className="btn-secondary min-h-11 !rounded-lg border-[#ffd43b]/60 !text-[#ffd43b]"
-          >
-            <span aria-hidden="true" className="mr-2 text-lg">+</span>
-            Add Portfolio Review
-          </Link>
-        </div>
-      </header>
+      <AdminPageHeader
+        badge="Dashboard overview"
+        actions={
+          <>
+            <Link href="/admin/articles/new" className="btn-primary min-h-11 !rounded-lg">
+              <span aria-hidden="true" className="mr-2 text-lg">+</span>
+              Create Article
+            </Link>
+            <Link
+              href="/admin/portfolio/new"
+              className="btn-secondary min-h-11 !rounded-lg border-[#ffd43b]/60 !text-[#ffd43b]"
+            >
+              <span aria-hidden="true" className="mr-2 text-lg">+</span>
+              Add Portfolio Review
+            </Link>
+          </>
+        }
+      >
+        Dashboard <span className="text-[#ffd43b]">Overview</span>
+      </AdminPageHeader>
 
       <section aria-label="Content statistics" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <SummaryCard icon="articles" label="Total Articles" value={articles.total} />

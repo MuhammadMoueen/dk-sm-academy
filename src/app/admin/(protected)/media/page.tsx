@@ -1,3 +1,5 @@
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+
 export default function AdminMediaPage() {
-  return null;
+  return <AdminPageHeader badge="Site management"><span className="text-white">Media </span><span className="text-[#ffd43b]">Library</span></AdminPageHeader>;
 }

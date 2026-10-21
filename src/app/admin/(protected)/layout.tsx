@@ -29,8 +29,8 @@ async function ProtectedAdminContent({
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-10 bg-[rgba(5,5,5,0.84)]"
       />
-      <AdminSidebar />
-      <div className="min-h-screen min-w-0 flex-1">
+      <AdminSidebar account={account} />
+      <div className="min-h-screen min-w-0 flex-1 lg:ml-64">
         <AdminHeader account={account} />
         <main className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           {children}

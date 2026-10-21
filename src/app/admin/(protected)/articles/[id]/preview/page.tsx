@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { ArticleContent } from "@/components/blog/article-content";
 import { getDb } from "@/lib/db";
 import type { ArticleContentBlock } from "@/types/article";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 
 export default async function ArticlePreviewPage({
   params,
@@ -42,8 +43,10 @@ export default async function ArticlePreviewPage({
           <Link href={`/admin/articles/${id}/edit`} className="rounded-lg border border-[#ffd43b]/40 px-3 py-1.5 text-sm font-semibold text-[#ffd43b]">Edit article</Link>
         </div>
       </div>
-      {article.category && <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-[#ffd43b]">{article.category}</p>}
-      <h1 className="mb-4 text-3xl font-extrabold leading-tight sm:text-5xl">{article.title}</h1>
+      <AdminPageHeader badge="Article preview">
+        <span className="text-white">{article.title}</span>
+      </AdminPageHeader>
+      {article.category && <p className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-[#ffd43b]">{article.category}</p>}
       <p className="mb-6 text-lg leading-relaxed text-gray-300">{article.excerpt}</p>
       <time dateTime={article.publishedAt ?? article.createdAt} className="mb-6 block text-sm text-gray-500">
         {new Intl.DateTimeFormat("en", { dateStyle: "long" }).format(new Date(article.publishedAt ?? article.createdAt))}

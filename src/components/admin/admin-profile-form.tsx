@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { AdminAccount } from "@/lib/auth";
-import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { ProfileImageEditor } from "@/components/admin/profile-image-editor";
 
 const inputClass =
   "min-h-11 w-full rounded-lg border border-white/15 bg-[#090909] px-3 text-white outline-none focus:border-[#ffd43b] focus:ring-2 focus:ring-[#ffd43b]/15";
@@ -45,6 +45,22 @@ export function AdminProfileForm({ initialAccount }: { initialAccount: AdminAcco
     };
   }, []);
 
+  async function saveUploadedAvatar(url: string) {
+    const response = await fetch("/api/admin/profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ displayName, avatarUrl: url }),
+    });
+    const result = (await response.json()) as { account?: AdminAccount; error?: string };
+    if (!response.ok || !result.account) {
+      throw new Error(result.error ?? "Profile image could not be saved.");
+    }
+    setAvatarUrl(result.account.avatarUrl);
+    setDisplayName(result.account.displayName);
+    setProfileNotice("Profile image updated.");
+    router.refresh();
+  }
+
   async function saveProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (savingProfile) return;
@@ -66,6 +82,7 @@ export function AdminProfileForm({ initialAccount }: { initialAccount: AdminAcco
         const details = Object.values(result.fields ?? {}).join(" ");
         throw new Error(details || result.error || "Profile could not be saved.");
       }
+
       setDisplayName(result.account.displayName);
       setAvatarUrl(result.account.avatarUrl);
       setProfileNotice("Profile updated.");
@@ -75,6 +92,7 @@ export function AdminProfileForm({ initialAccount }: { initialAccount: AdminAcco
     } finally {
       setSavingProfile(false);
     }
+
   }
 
   return (
@@ -94,7 +112,7 @@ export function AdminProfileForm({ initialAccount }: { initialAccount: AdminAcco
           <input id="admin-display-name" required maxLength={100} value={displayName} onChange={(event) => setDisplayName(event.target.value)} className={inputClass} />
         </div>
         <div>
-          <ImageUploadField id="admin-avatar-file" label="Upload avatar" kind="avatar" onUploaded={setAvatarUrl} />
+          <ProfileImageEditor onSaved={saveUploadedAvatar} />
           <label htmlFor="admin-avatar-url" className={labelClass}>Existing same-site avatar path</label>
           <input id="admin-avatar-url" value={avatarUrl} placeholder="/images/admin-avatar.png" onChange={(event) => setAvatarUrl(event.target.value)} className={inputClass} />
         </div>

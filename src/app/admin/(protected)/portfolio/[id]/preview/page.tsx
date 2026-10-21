@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { PortfolioCard } from "@/components/portfolio/portfolio-card";
 import { getDb } from "@/lib/db";
 import type { PortfolioItem } from "@/types/portfolio";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 
 export default async function PortfolioPreviewPage({
   params,
@@ -34,7 +35,10 @@ export default async function PortfolioPreviewPage({
           <Link href={`/admin/portfolio/${id}/edit`} className="rounded-lg border border-[#ffd43b]/40 px-3 py-1.5 text-sm font-semibold text-[#ffd43b]">Edit review</Link>
         </div>
       </div>
-      <PortfolioCard item={review} preview />
+      <AdminPageHeader badge="Portfolio preview">
+        <span className="text-white">{review.clientName}</span><span className="text-[#ffd43b]"> Review</span>
+      </AdminPageHeader>
+      <div className="mt-6"><PortfolioCard item={review} preview /></div>
     </section>
   );
 }
