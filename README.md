@@ -16,7 +16,14 @@ The provisioning command prompts for the admin email, display name, and password
 
 Visit `/admin/login` to sign in. The dashboard supports Articles, Portfolio / Client Reviews, and My Profile management. Article content is composed from structured headings, paragraphs, lists, links, and image references. Portfolio reviews support half-star ratings and an optional verified-client badge.
 
-Image upload controls remain disabled until an actual storage provider is configured. Admin forms can reference existing same-site image paths; binary files are not stored in PostgreSQL.
+Images are stored in Cloudinary and only their HTTPS references are stored in
+PostgreSQL. Configure `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and
+`CLOUDINARY_API_SECRET` as server-only environment variables before using the
+admin upload controls. The upload API accepts PNG, JPEG, and WebP files up to
+8 MB and validates their file signatures.
+
+Apply pending migrations with `npm run db:migrate`; this includes article
+hashtags. Do not run migrations against an unintended database.
 
 Public article and portfolio sections display published database records only.
 
@@ -39,3 +46,16 @@ Public article and portfolio sections display published database records only.
 - `npm run lint` — run ESLint.
 - `npm run db:migrate` — apply pending PostgreSQL migrations.
 - `npm run db:provision-admin` — create the initial administrator.
+
+## Cloudinary setup
+
+In the Cloudinary Console:
+
+1. Copy **Cloud name** into `CLOUDINARY_CLOUD_NAME`.
+2. Open **Settings → Access keys** and copy **API Key** into
+   `CLOUDINARY_API_KEY`.
+3. Copy **API Secret** into `CLOUDINARY_API_SECRET` only in `.env.local` or
+   your production secret manager. Never expose it to client code or commit it.
+
+After setting the variables, restart Next.js. Uploads still require an
+authenticated administrator session.

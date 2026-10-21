@@ -31,6 +31,13 @@ export function ArticleCard({
               ? "A concise introduction to an educational article will appear here once it is published."
               : "Article summary")}
         </p>
+        {article?.hashtags?.length ? (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {article.hashtags.map((tag) => (
+              <span key={tag} className="text-xs font-semibold text-[#ffd43b]">{tag}</span>
+            ))}
+          </div>
+        ) : null}
         {article ? (
           <Link
             href={`/blog/${article.slug}`}

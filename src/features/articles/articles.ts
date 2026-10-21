@@ -9,6 +9,7 @@ type ArticleRow = {
   title: string;
   slug: string;
   excerpt: string;
+  hashtags: string[];
   content: ArticleContentBlock[];
   thumbnail_url: string;
   category: string | null;
@@ -26,6 +27,7 @@ function mapArticle(row: ArticleRow): Article {
     title: row.title,
     slug: row.slug,
     excerpt: row.excerpt,
+    hashtags: row.hashtags ?? [],
     content: row.content,
     thumbnailUrl: row.thumbnail_url,
     category: row.category ?? undefined,
@@ -39,7 +41,7 @@ function mapArticle(row: ArticleRow): Article {
 }
 
 const articleColumns = `
-  id, title, slug, excerpt, content, thumbnail_url, category, display_order,
+  id, title, slug, excerpt, hashtags, content, thumbnail_url, category, display_order,
   status, published_at, updated_at, seo_title, seo_description
 `;
 

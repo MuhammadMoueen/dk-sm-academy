@@ -10,6 +10,7 @@ type ArticleRow = {
   title: string;
   slug: string;
   thumbnailUrl: string;
+  hashtags: string[];
   status: ContentStatus;
   updatedAt: string;
 };
@@ -250,6 +251,13 @@ export function AdminContentList({
                   <p className="mb-1 break-all text-xs text-gray-500">
                     {article ? `/${item.slug}` : `${item.rating.toFixed(1)} / 5 rating`}
                   </p>
+                  {article && item.hashtags.length > 0 && (
+                    <div className="mb-1 flex flex-wrap gap-2">
+                      {item.hashtags.map((tag) => (
+                        <span key={tag} className="text-xs font-semibold text-[#ffd43b]">{tag}</span>
+                      ))}
+                    </div>
+                  )}
                   <p className="mb-0 text-xs text-gray-500">
                     Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(item.updatedAt))}
                   </p>

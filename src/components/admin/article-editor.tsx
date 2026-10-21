@@ -6,11 +6,13 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArticleContent } from "@/components/blog/article-content";
 import type { ArticleContentBlock } from "@/types/article";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 type ArticleFormData = {
   title: string;
   slug: string;
   excerpt: string;
+  hashtags: string[];
   content: ArticleContentBlock[];
   thumbnailUrl: string;
   category: string;
@@ -24,6 +26,7 @@ const emptyArticle: ArticleFormData = {
   title: "",
   slug: "",
   excerpt: "",
+  hashtags: [],
   content: [],
   thumbnailUrl: "",
   category: "",
@@ -87,6 +90,7 @@ export function ArticleEditor({ articleId }: { articleId?: string }) {
           title: String(article.title ?? ""),
           slug: String(article.slug ?? ""),
           excerpt: String(article.excerpt ?? ""),
+          hashtags: Array.isArray(article.hashtags) ? article.hashtags.map(String) : [],
           content: Array.isArray(article.content)
             ? (article.content as ArticleContentBlock[])
             : [],
@@ -231,6 +235,26 @@ export function ArticleEditor({ articleId }: { articleId?: string }) {
               <textarea id="article-excerpt" value={form.excerpt} required maxLength={500} rows={3} onChange={(event) => change("excerpt", event.target.value)} className={`${inputClass} py-2`} />
               <FieldError>{errors.excerpt}</FieldError>
             </div>
+            <div>
+              <label htmlFor="article-hashtags" className={labelClass}>Hashtags</label>
+              <input
+                id="article-hashtags"
+                value={form.hashtags.join(" ")}
+                placeholder="#trading #crypto"
+                onChange={(event) =>
+                  change(
+                    "hashtags",
+                    event.target.value
+                      .split(/[\s,]+/)
+                      .map((tag) => (tag.startsWith("#") ? tag : `#${tag}`))
+                      .filter((tag) => tag !== "#"),
+                  )
+                }
+                className={inputClass}
+              />
+              <p className="mb-0 mt-1 text-xs text-gray-500">Use up to 10 tags, separated by spaces.</p>
+              <FieldError>{errors.hashtags}</FieldError>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="article-category" className={labelClass}>Category</label>
@@ -247,11 +271,8 @@ export function ArticleEditor({ articleId }: { articleId?: string }) {
 
         <div className="rounded-xl border border-white/10 bg-[#111] p-4 sm:p-6">
           <h2 className="mb-2 text-lg font-bold">Thumbnail</h2>
-          <p className="mb-4 text-sm text-amber-200">
-            Media uploads are unavailable until a storage provider is configured. You can reference an existing same-site image.
-          </p>
-          <label htmlFor="article-file" className={labelClass}>Upload thumbnail</label>
-          <input id="article-file" type="file" accept="image/png,image/jpeg,image/webp" disabled className="block min-h-11 w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-400 disabled:cursor-not-allowed" />
+          <p className="mb-4 text-sm text-gray-400">PNG, JPEG, and WebP images up to 8 MB.</p>
+          <ImageUploadField id="article-file" label="Upload thumbnail" kind="article-thumbnail" onUploaded={(url) => change("thumbnailUrl", url)} />
           <label htmlFor="article-thumbnail" className={`${labelClass} mt-4`}>Existing image path</label>
           <input id="article-thumbnail" value={form.thumbnailUrl} placeholder="/images/example.png" onChange={(event) => change("thumbnailUrl", event.target.value)} className={inputClass} />
           <FieldError>{errors.thumbnailUrl}</FieldError>

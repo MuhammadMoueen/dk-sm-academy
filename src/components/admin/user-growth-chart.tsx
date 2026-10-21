@@ -53,11 +53,14 @@ export function UserGrowthChart() {
   const [error, setError] = useState("");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    let active = true;
+  function beginSelectionChange() {
     setLoading(true);
     setError("");
     setHoveredIndex(null);
+  }
+
+  useEffect(() => {
+    let active = true;
     const query = new URLSearchParams({
       period,
       year: String(year),
@@ -131,7 +134,10 @@ export function UserGrowthChart() {
               <button
                 key={value}
                 type="button"
-                onClick={() => setPeriod(value)}
+                onClick={() => {
+                  beginSelectionChange();
+                  setPeriod(value);
+                }}
                 className={`min-h-10 rounded-lg px-4 text-sm font-semibold capitalize transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] motion-reduce:transition-none ${
                   period === value
                     ? "bg-[#ffd43b] text-black shadow-[0_0_18px_rgba(255,212,59,0.3)]"
@@ -145,7 +151,10 @@ export function UserGrowthChart() {
           {period === "month" && (
             <select
               value={month}
-              onChange={(event) => setMonth(Number(event.target.value))}
+              onChange={(event) => {
+                beginSelectionChange();
+                setMonth(Number(event.target.value));
+              }}
               className="min-h-11 rounded-xl border border-white/15 bg-[#090909] px-3 text-sm text-white outline-none transition focus:border-[#ffd43b] focus:ring-2 focus:ring-[#ffd43b]/20"
               aria-label="Analytics month"
             >
@@ -160,7 +169,10 @@ export function UserGrowthChart() {
           )}
           <select
             value={year}
-            onChange={(event) => setYear(Number(event.target.value))}
+            onChange={(event) => {
+              beginSelectionChange();
+              setYear(Number(event.target.value));
+            }}
             className="min-h-11 rounded-xl border border-white/15 bg-[#090909] px-3 text-sm text-white outline-none transition focus:border-[#ffd43b] focus:ring-2 focus:ring-[#ffd43b]/20"
             aria-label="Analytics year"
           >

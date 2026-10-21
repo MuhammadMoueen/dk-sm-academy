@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { PortfolioCard } from "@/components/portfolio/portfolio-card";
 import type { PortfolioItem } from "@/types/portfolio";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 type PortfolioFormData = {
   clientName: string;
@@ -177,19 +178,17 @@ export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
         <section className="rounded-xl border border-white/10 bg-[#111] p-4 sm:p-6">
           <h2 className="mb-2 text-lg font-bold">Images</h2>
           <p className="mb-4 text-sm text-amber-200">
-            Image uploads are unavailable until a storage provider is configured. Use existing same-site image paths.
+            PNG, JPEG, and WebP images up to 8 MB are stored securely in Cloudinary.
           </p>
           <div className="mb-4 grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="client-image-file" className={labelClass}>Upload client photo</label>
-              <input id="client-image-file" type="file" accept="image/png,image/jpeg,image/webp" disabled className="block min-h-11 w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-400 disabled:cursor-not-allowed" />
+              <ImageUploadField id="client-image-file" label="Upload client photo" kind="client-image" onUploaded={(url) => change("clientImage", url)} />
               <label htmlFor="client-image" className={`${labelClass} mt-3`}>Existing client photo path *</label>
               <input id="client-image" placeholder="/images/client.png" value={form.clientImage} onChange={(event) => change("clientImage", event.target.value)} className={inputClass} />
               {fieldErrors.clientImage && <p className="mb-0 mt-1 text-sm text-red-300">{fieldErrors.clientImage}</p>}
             </div>
             <div>
-              <label htmlFor="transaction-image-file" className={labelClass}>Upload transaction image</label>
-              <input id="transaction-image-file" type="file" accept="image/png,image/jpeg,image/webp" disabled className="block min-h-11 w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-400 disabled:cursor-not-allowed" />
+              <ImageUploadField id="transaction-image-file" label="Upload transaction image" kind="transaction-image" onUploaded={(url) => change("transactionImage", url)} />
               <label htmlFor="transaction-image" className={`${labelClass} mt-3`}>Existing transaction image path *</label>
               <input id="transaction-image" placeholder="/images/transaction.png" value={form.transactionImage} onChange={(event) => change("transactionImage", event.target.value)} className={inputClass} />
               {fieldErrors.transactionImage && <p className="mb-0 mt-1 text-sm text-red-300">{fieldErrors.transactionImage}</p>}

@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
   try {
     const { rows } = await getDb().query(
-      `SELECT id, title, slug, excerpt, content, thumbnail_url AS "thumbnailUrl",
+      `SELECT id, title, slug, excerpt, hashtags, content, thumbnail_url AS "thumbnailUrl",
               category, display_order AS "displayOrder", status,
               published_at AS "publishedAt", created_at AS "createdAt",
               updated_at AS "updatedAt", seo_title AS "seoTitle",
@@ -77,12 +77,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
     }
     await client.query(
       `UPDATE articles
-       SET title = $2, slug = $3, excerpt = $4, content = $5::jsonb,
-           thumbnail_url = $6, category = $7, display_order = $8,
-           status = $9, seo_title = $10, seo_description = $11,
+       SET title = $2, slug = $3, excerpt = $4, hashtags = $5,
+           content = $6::jsonb, thumbnail_url = $7, category = $8,
+           display_order = $9, status = $10, seo_title = $11,
+           seo_description = $12,
            published_at = CASE
-             WHEN $9 = 'published' AND published_at IS NULL THEN NOW()
-             WHEN $9 = 'draft' THEN NULL
+             WHEN $10 = 'published' AND published_at IS NULL THEN NOW()
+             WHEN $10 = 'draft' THEN NULL
              ELSE published_at
            END,
            updated_at = NOW()
@@ -92,6 +93,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         article.title,
         article.slug,
         article.excerpt,
+        article.hashtags,
         JSON.stringify(article.content),
         article.thumbnailUrl,
         article.category || null,

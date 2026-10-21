@@ -87,6 +87,15 @@ async function PublishedArticle({ params }: ArticlePageProps) {
                 }).format(new Date(article.publishedAt))}
               </time>
             </p>
+            {article.hashtags.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {article.hashtags.map((tag) => (
+                  <span key={tag} className="rounded-full border border-[#ffd43b]/25 px-3 py-1 text-xs font-semibold text-[#ffd43b]">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </header>
 
           <ArticleThumbnail

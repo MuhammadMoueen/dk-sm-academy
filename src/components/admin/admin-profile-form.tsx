@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { AdminAccount } from "@/lib/auth";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 const inputClass =
   "min-h-11 w-full rounded-lg border border-white/15 bg-[#090909] px-3 text-white outline-none focus:border-[#ffd43b] focus:ring-2 focus:ring-[#ffd43b]/15";
@@ -93,9 +94,7 @@ export function AdminProfileForm({ initialAccount }: { initialAccount: AdminAcco
           <input id="admin-display-name" required maxLength={100} value={displayName} onChange={(event) => setDisplayName(event.target.value)} className={inputClass} />
         </div>
         <div>
-          <label htmlFor="admin-avatar-file" className={labelClass}>Upload avatar</label>
-          <input id="admin-avatar-file" type="file" accept="image/png,image/jpeg,image/webp" disabled className="block min-h-11 w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-400 disabled:cursor-not-allowed" />
-          <p className="mb-3 mt-1 text-xs text-amber-200">Uploads are unavailable until a storage provider is configured.</p>
+          <ImageUploadField id="admin-avatar-file" label="Upload avatar" kind="avatar" onUploaded={setAvatarUrl} />
           <label htmlFor="admin-avatar-url" className={labelClass}>Existing same-site avatar path</label>
           <input id="admin-avatar-url" value={avatarUrl} placeholder="/images/admin-avatar.png" onChange={(event) => setAvatarUrl(event.target.value)} className={inputClass} />
         </div>

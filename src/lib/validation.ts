@@ -11,8 +11,17 @@ const safeImageReference = z
         !value.startsWith("//") &&
         !value.includes("\\") &&
         !value.split("/").includes("..")),
-    "Use an existing same-site image path. Uploads are not configured.",
+    "Use an existing same-site image path or upload an image.",
   );
+const imageReference = safeImageReference.or(
+  z.string().url().refine((value) => {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname === "res.cloudinary.com";
+  }, "Use a same-site image path or Cloudinary URL."),
+);
+const hashtagsSchema = z.array(
+  z.string().trim().regex(/^#?[a-zA-Z0-9][a-zA-Z0-9_-]{0,39}$/),
+).max(10);
 
 const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({
@@ -67,7 +76,8 @@ export const articleSchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a URL-safe lowercase slug."),
   excerpt: z.string().trim().min(1).max(500),
   content: z.array(contentBlockSchema).max(200),
-  thumbnailUrl: safeImageReference,
+  thumbnailUrl: imageReference,
+  hashtags: hashtagsSchema.default([]),
   category: z.string().trim().max(80).optional(),
   displayOrder: z.number().int().min(0).nullable().optional(),
   status: z.enum(["draft", "published"]),
@@ -77,8 +87,8 @@ export const articleSchema = z.object({
 
 export const portfolioSchema = z.object({
   clientName: z.string().trim().min(1).max(120),
-  clientImage: safeImageReference,
-  transactionImage: safeImageReference,
+  clientImage: imageReference,
+  transactionImage: imageReference,
   review: z.string().trim().min(1).max(3000),
   rating: z.number().min(1).max(5).multipleOf(0.5),
   isVerified: z.boolean().default(false),
@@ -87,7 +97,7 @@ export const portfolioSchema = z.object({
 
 export const profileSchema = z.object({
   displayName: z.string().trim().min(1).max(100),
-  avatarUrl: safeImageReference,
+  avatarUrl: imageReference,
 });
 
 export const passwordChangeSchema = z
