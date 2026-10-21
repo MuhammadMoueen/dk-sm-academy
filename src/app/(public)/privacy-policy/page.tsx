@@ -44,10 +44,14 @@ export default function PrivacyPolicyPage() {
       <ContentSection title="Cookies, third parties, and external links">
         <p>
           The application code does not currently identify a dedicated
-          analytics or advertising-cookie integration. Hosting, security, or
-          future site features may use necessary technical storage depending
-          on configuration. External websites and platforms linked from this
-          site operate under their own privacy practices.
+          third-party analytics or advertising-cookie integration. The
+          website may use a first-party, HttpOnly cookie to prevent repeated
+          refreshes from inflating an aggregate daily visitor count. The
+          analytics record stores only a daily total and does not store names,
+          email addresses, or full IP addresses. Hosting, security, or future
+          site features may use necessary technical storage depending on
+          configuration. External websites and platforms linked from this site
+          operate under their own privacy practices.
         </p>
       </ContentSection>
 

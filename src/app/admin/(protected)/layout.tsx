@@ -6,6 +6,7 @@ import { AdminHeader } from "@/components/admin/admin-header";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { BrandLoader } from "@/components/layout/brand-loader";
 import { requireAdmin } from "@/lib/auth";
+import Image from "next/image";
 
 async function ProtectedAdminContent({
   children,
@@ -15,7 +16,19 @@ async function ProtectedAdminContent({
   if (!account) redirect("/admin/login");
 
   return (
-    <div className="min-h-screen bg-[#090909] text-white lg:flex">
+    <div className="admin-shell relative isolate min-h-screen text-white lg:flex">
+      <Image
+        src="/images/admin-dashboard-bg.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="pointer-events-none fixed -z-20 object-cover object-center"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 -z-10 bg-[rgba(5,5,5,0.84)]"
+      />
       <AdminSidebar />
       <div className="min-h-screen min-w-0 flex-1">
         <AdminHeader account={account} />

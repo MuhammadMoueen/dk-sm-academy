@@ -8,6 +8,7 @@ const items = [
   { label: "Articles", href: "/admin/articles" },
   { label: "Portfolio / Reviews", href: "/admin/portfolio" },
   { label: "My Profile", href: "/admin/profile" },
+  { label: "Settings", href: "/admin/settings" },
 ];
 
 export function AdminNavigation({
@@ -28,10 +29,10 @@ export function AdminNavigation({
             href={item.href}
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
-            className={`rounded-lg px-4 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] ${
+            className={`rounded-lg border px-4 py-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] ${
               active
-                ? "bg-[#ffd43b]/10 text-[#ffd43b]"
-                : "text-gray-300 hover:bg-white/5 hover:text-white"
+                ? "border-[#ffd43b]/60 bg-[#ffd43b]/15 text-[#ffd43b] shadow-[0_0_18px_rgba(255,212,59,0.12)]"
+                : "border-transparent text-gray-300 hover:border-white/10 hover:bg-white/5 hover:text-white"
             }`}
           >
             {item.label}
