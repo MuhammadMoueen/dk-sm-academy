@@ -178,6 +178,54 @@ p {
   animation: brand-loader-rotation 1.15s linear infinite;
 }
 
+@keyframes admin-login-border-rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.admin-login-card {
+  position: relative;
+  isolation: isolate;
+  background: rgba(7, 7, 6, 0.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-login-card::before {
+  position: absolute;
+  z-index: 0;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg 286deg,
+    rgba(255, 173, 0, 0.16) 305deg,
+    rgba(255, 212, 59, 0.7) 326deg,
+    #fff2b0 340deg,
+    #ffb800 350deg,
+    transparent 360deg
+  );
+  content: "";
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 5px rgba(255, 196, 40, 0.38));
+  animation: admin-login-border-rotation 5s linear infinite;
+}
+
+.admin-login-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.admin-login-field:focus-within input {
+  caret-color: var(--accent);
+}
+
 @keyframes brand-loader-rotation {
   to {
     transform: rotate(360deg);
@@ -381,5 +429,9 @@ p {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .admin-login-card::before {
+    animation: none;
   }
 }
