@@ -27,14 +27,8 @@ function ImagePlaceholder({
         <circle cx="8.5" cy="8.5" r="1.5" />
         <path d="m21 15-5-5L5 21" />
       </svg>
-
-      <span className="font-semibold text-[#ffd43b]">
-        {title}
-      </span>
-
-      <span className="text-sm text-gray-400">
-        {detail}
-      </span>
+      <span className="font-semibold text-[#ffd43b]">{title}</span>
+      <span className="text-sm text-gray-400">{detail}</span>
     </div>
   );
 }
@@ -67,6 +61,32 @@ function ClientAvatar({ item }: { item?: PortfolioItem }) {
   );
 }
 
+function VerifiedBadge() {
+  return (
+    <span
+      role="img"
+      aria-label="Verified client"
+      title="Verified client"
+      className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-[#ffd43b] bg-white shadow-[0_0_10px_rgba(255,212,59,0.3)]"
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        className="h-3.5 w-3.5"
+      >
+        <path
+          d="m5 12 4 4L19 6"
+          stroke="#C99A00"
+          strokeWidth="3.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
 export function PortfolioCard({
   item,
   preview = false,
@@ -78,7 +98,6 @@ export function PortfolioCard({
 
   return (
     <article className="group relative flex min-w-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/35 bg-[#111]/90 p-3 shadow-[0_12px_34px_rgba(0,0,0,0.32)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/70 hover:shadow-[0_16px_40px_rgba(255,207,50,0.12)] motion-reduce:transform-none motion-reduce:transition-none sm:p-4">
-      {/* Transaction screenshot */}
       {item?.transactionImage ? (
         <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-[#ffd43b]/20 bg-[#202020]">
           <Image
@@ -100,32 +119,20 @@ export function PortfolioCard({
         />
       )}
 
-      {/* Client profile */}
       <div className="flex min-w-0 items-center gap-3 px-1 pb-1 pt-4">
         <ClientAvatar item={item} />
 
         <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 items-start gap-1.5">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
             <h3 className="min-w-0 break-words text-base font-bold leading-snug text-[#ffd43b] sm:text-lg">
               {item?.clientName ?? "Client name"}
             </h3>
-            {item?.isVerified && (
-              <span
-                role="img"
-                aria-label="Verified Client"
-                title="Verified Client"
-                className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#ffd43b]/70 text-xs font-bold text-[#ffd43b]"
-              >
-                ✓
-              </span>
-            )}
+
+            {item?.isVerified && <VerifiedBadge />}
           </div>
 
           {item ? (
-            <time
-              dateTime={item.createdAt}
-              className="text-xs text-gray-400"
-            >
+            <time dateTime={item.createdAt} className="text-xs text-gray-400">
               {new Intl.DateTimeFormat("en", {
                 dateStyle: "medium",
               }).format(new Date(item.createdAt))}
@@ -138,7 +145,6 @@ export function PortfolioCard({
         </div>
       </div>
 
-      {/* Client review */}
       <div className="mt-3 flex-1 rounded-xl border border-[#ffd43b]/10 bg-white/[0.02] p-3">
         <div
           role="img"
@@ -147,6 +153,7 @@ export function PortfolioCard({
         >
           {Array.from({ length: 5 }, (_, index) => {
             const fill = Math.max(0, Math.min(1, rating - index)) * 100;
+
             return (
               <span key={index} className="relative">
                 ★
