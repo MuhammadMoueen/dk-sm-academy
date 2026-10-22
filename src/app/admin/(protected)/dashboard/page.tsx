@@ -105,6 +105,8 @@ export default async function AdminDashboardPage() {
         <SummaryCard icon="portfolio" label="Portfolio Reviews" value={portfolio.total} />
       </section>
 
+      <SocialAnalyticsCards />
+
       <section
         aria-labelledby="user-growth-heading"
         className="overflow-hidden rounded-xl border border-[#ffd43b]/45 bg-[linear-gradient(145deg,rgba(16,16,15,0.97),rgba(8,8,8,0.96))] shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
@@ -123,8 +125,6 @@ export default async function AdminDashboardPage() {
           <UserGrowthChart />
         </div>
       </section>
-
-      <SocialAnalyticsCards />
 
       <section
         aria-labelledby="activity-heading"

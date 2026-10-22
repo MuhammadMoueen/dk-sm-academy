@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 type Provider = "facebook" | "tiktok" | "youtube" | "instagram";
@@ -20,6 +21,42 @@ const labels: Record<Provider, string> = {
   tiktok: "TikTok Followers",
   youtube: "YouTube Subscribers",
   instagram: "Instagram Business Followers",
+};
+
+const icons: Record<Provider, ReactNode> = {
+  facebook: (
+    <path
+      d="M14 8h2V5.5c-.35-.05-1.55-.15-2.85-.15-2.82 0-4.75 1.72-4.75 4.88V13H5.5v2.8h2.9V23h3.55v-7.2h2.95l.47-2.8h-3.42v-2.45c0-.81.22-1.35 1.55-1.35Z"
+      fill="currentColor"
+      stroke="none"
+    />
+  ),
+  tiktok: (
+    <path
+      d="M15.2 3h3.05c.2 1.62 1.1 2.85 2.75 3.7v3.05a8.7 8.7 0 0 1-2.7-.82v6.08A5.98 5.98 0 1 1 13 9.1v3.15a2.9 2.9 0 1 0 2.3 2.83V3h-.1Z"
+      fill="currentColor"
+      stroke="none"
+    />
+  ),
+  youtube: (
+    <path
+      d="M21.6 7.1a2.8 2.8 0 0 0-1.97-1.98C17.9 4.65 12 4.65 12 4.65s-5.9 0-7.63.47A2.8 2.8 0 0 0 2.4 7.1C1.93 8.83 1.93 12 1.93 12s0 3.17.47 4.9a2.8 2.8 0 0 0 1.97 1.98c1.73.47 7.63.47 7.63.47s5.9 0 7.63-.47a2.8 2.8 0 0 0 1.97-1.98c.47-1.73.47-4.9.47-4.9s0-3.17-.47-4.9ZM10 15.5v-7l6 3.5-6 3.5Z"
+      fill="currentColor"
+      stroke="none"
+    />
+  ),
+  instagram: (
+    <rect
+      x="4"
+      y="4"
+      width="16"
+      height="16"
+      rx="4"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+    />
+  ),
 };
 
 function statusText(metric: Metric) {
@@ -83,12 +120,16 @@ export function SocialAnalyticsCards() {
 
   return (
     <section aria-labelledby="social-analytics-heading" className="space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h2 id="social-analytics-heading" className="mb-1 text-xl font-bold sm:text-2xl">
-            Social audience
+          <h2
+            id="social-analytics-heading"
+            className="mb-0 text-3xl font-extrabold leading-tight tracking-[-0.035em] sm:text-4xl"
+          >
+            <span className="text-white">Social </span>
+            <span className="text-[#ffd43b]">Audience</span>
           </h2>
-          <p className="mb-0 text-sm text-gray-400">
+          <p className="mb-0 mt-2 text-sm leading-relaxed text-gray-400">
             Official follower and subscriber counts with daily history.
           </p>
         </div>
@@ -115,9 +156,22 @@ export function SocialAnalyticsCards() {
           const isConnected = metric?.status === "connected" && metric.configured;
           const hasMetric = isConnected && Boolean(metric?.observedAt);
           return (
-            <article key={provider} className="rounded-xl border border-[#ffd43b]/35 bg-[linear-gradient(140deg,rgba(24,22,15,0.96),rgba(10,10,10,0.95)_60%)] p-4 shadow-[0_0_18px_rgba(255,212,59,0.05)]">
-              <div className="mb-4 flex items-start justify-between gap-2">
-                <h3 className="mb-0 text-sm font-semibold text-gray-200">{labels[provider]}</h3>
+            <article
+              key={provider}
+              className="group relative overflow-hidden rounded-xl border border-[#ffd43b]/55 bg-[linear-gradient(140deg,rgba(24,22,15,0.96),rgba(10,10,10,0.95)_60%)] p-4 shadow-[0_0_18px_rgba(255,212,59,0.07)] transition duration-300 hover:border-[#ffd43b] hover:shadow-[0_0_24px_rgba(255,212,59,0.17)] sm:p-5"
+            >
+              <div className="mb-2 flex items-start justify-between gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl border border-[#ffd43b]/25 bg-[#ffd43b]/10 text-[#ffd43b]">
+                  <svg
+                    aria-label={`${provider} icon`}
+                    role="img"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="h-5 w-5"
+                  >
+                    {icons[provider]}
+                  </svg>
+                </span>
                 <span className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${
                   isConnected
                     ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
@@ -129,6 +183,7 @@ export function SocialAnalyticsCards() {
                   })}
                 </span>
               </div>
+              <p className="mb-1 text-sm font-medium text-gray-400">{labels[provider]}</p>
               <p className="mb-1 text-3xl font-extrabold tracking-tight text-white">
                 {loading
                   ? "—"

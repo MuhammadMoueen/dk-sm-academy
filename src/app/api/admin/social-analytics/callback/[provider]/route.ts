@@ -1,32 +1,82 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { completeOAuth, verifyOAuthState } from "@/features/social-analytics/oauth";
-import { SOCIAL_PROVIDERS, type SocialProvider } from "@/features/social-analytics/social-analytics";
+import {
+  completeOAuth,
+  verifyOAuthState,
+} from "@/features/social-analytics/oauth";
+import {
+  SOCIAL_PROVIDERS,
+  type SocialProvider,
+} from "@/features/social-analytics/social-analytics";
 import { getAdminSession } from "@/lib/auth";
 
 export async function GET(
   request: Request,
   context: { params: Promise<{ provider: string }> },
 ) {
-  if (!(await getAdminSession())) {
-    return NextResponse.redirect(new URL("/admin/login?social=unauthorized", request.url));
-  }
-  const provider = (await context.params).provider as SocialProvider;
   const url = new URL(request.url);
-  const state = url.searchParams.get("state") ?? "";
+  const providerParam = (await context.params).provider;
+
+  if (
+    !SOCIAL_PROVIDERS.includes(providerParam as SocialProvider)
+  ) {
+    return NextResponse.redirect(
+      new URL("/admin/dashboard?social=invalid_provider", url.origin),
+    );
+  }
+
+  const provider = providerParam as SocialProvider;
+  const error = url.searchParams.get("error");
   const code = url.searchParams.get("code") ?? "";
-  const storedState = (await cookies()).get(`social_oauth_state_${provider}`)?.value;
-  if (!SOCIAL_PROVIDERS.includes(provider) || !storedState || storedState !== state || !verifyOAuthState(state, provider)) {
-    return NextResponse.redirect(new URL("/admin/dashboard?social=invalid_state", request.url));
+  const state = url.searchParams.get("state") ?? "";
+
+  if (error || !code) {
+    return NextResponse.redirect(
+      new URL("/admin/dashboard?social=authorization_denied", url.origin),
+    );
   }
-  if (url.searchParams.get("error") || !code) {
-    return NextResponse.redirect(new URL("/admin/dashboard?social=authorization_denied", request.url));
+
+  const cookieStore = await cookies();
+  const stateCookieName = `social_oauth_state_${provider}`;
+  const storedState = cookieStore.get(stateCookieName)?.value;
+
+  if (
+    !storedState ||
+    !state ||
+    storedState !== state ||
+    !verifyOAuthState(state, provider)
+  ) {
+    return NextResponse.redirect(
+      new URL("/admin/dashboard?social=invalid_state", url.origin),
+    );
   }
+
+  // Require the existing admin session before saving provider credentials.
+  const admin = await getAdminSession();
+
+  if (!admin) {
+    return NextResponse.redirect(
+      new URL("/admin/login?social=unauthorized", url.origin),
+    );
+  }
+
   try {
     await completeOAuth(provider, code);
-    (await cookies()).delete(`social_oauth_state_${provider}`);
-    return NextResponse.redirect(new URL("/admin/dashboard?social=connected", request.url));
-  } catch {
-    return NextResponse.redirect(new URL("/admin/dashboard?social=connection_failed", request.url));
+    cookieStore.delete(stateCookieName);
+
+    return NextResponse.redirect(
+      new URL("/admin/dashboard?social=connected", url.origin),
+    );
+  } catch (error) {
+    // Keep sensitive OAuth credentials and provider error details out of URLs.
+    console.error("[social-oauth] Connection failed", {
+      provider,
+      errorType:
+        error instanceof Error ? error.name : "UnknownError",
+    });
+
+    return NextResponse.redirect(
+      new URL("/admin/dashboard?social=connection_failed", url.origin),
+    );
   }
 }
