@@ -5,6 +5,7 @@ import { getPortfolioCounts } from "@/features/portfolio/portfolio-data";
 import { getDb } from "@/lib/db";
 import { UserGrowthChart } from "@/components/admin/user-growth-chart";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { SocialAnalyticsCards } from "@/components/admin/social-analytics-cards";
 
 function SummaryCard({
   label,
@@ -122,6 +123,8 @@ export default async function AdminDashboardPage() {
           <UserGrowthChart />
         </div>
       </section>
+
+      <SocialAnalyticsCards />
 
       <section
         aria-labelledby="activity-heading"

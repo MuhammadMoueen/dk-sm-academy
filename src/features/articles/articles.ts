@@ -88,6 +88,21 @@ export async function getPublishedArticleBySlug(
   return rows[0] ? mapArticle(rows[0]) : undefined;
 }
 
+export async function getPublishedArticleSlugs(): Promise<
+  Array<{ slug: string; updatedAt: string }>
+> {
+  const { rows } = await getDb().query<{ slug: string; updated_at: Date }>(
+    `SELECT slug, updated_at
+     FROM articles
+     WHERE status = 'published'
+     ORDER BY updated_at DESC`,
+  );
+  return rows.map((row) => ({
+    slug: row.slug,
+    updatedAt: row.updated_at.toISOString(),
+  }));
+}
+
 export async function getArticleById(
   id: string,
 ): Promise<Article | undefined> {

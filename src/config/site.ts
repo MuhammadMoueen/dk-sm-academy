@@ -4,7 +4,7 @@ export const siteConfig = {
   shortName: "DK & SM",
   description:
     "Learn Forex and Crypto, explore market insights, and grow your financial knowledge with DK & SM Academy.",
-  url: "https://example.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   navigation: [
     { label: "Home", href: "/#home" },
     { label: "About", href: "/#about" },

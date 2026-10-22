@@ -36,7 +36,7 @@ export function ImageUploadField({
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    setPreview(currentUrl ?? "");
+    queueMicrotask(() => setPreview(currentUrl ?? ""));
   }, [currentUrl]);
 
   useEffect(() => {
