@@ -74,11 +74,12 @@ export async function PortfolioSection({
       <div className="site-container">
         <PortfolioIntroduction fullPage={fullPage} />
 
-        <PortfolioCollection
-          items={portfolioItems}
-          previewWhenEmpty={!fullPage}
-          initialCount={fullPage ? 8 : 4}
-        />
+      <PortfolioCollection
+        items={portfolioItems}
+        previewWhenEmpty={!fullPage}
+        initialCount={fullPage ? 8 : 4}
+        fullPage={fullPage}
+      />
 
         {!fullPage && (
           <div className="mt-7 flex justify-center">
