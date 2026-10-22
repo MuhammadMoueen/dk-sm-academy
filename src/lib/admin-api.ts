@@ -25,7 +25,24 @@ export async function requireApiAdmin(request: Request) {
 }
 
 export function jsonError(error: unknown, message = "Request could not be completed.") {
-  console.error("Admin API request failed:", error);
+  if (error instanceof Error) {
+    const databaseError = error as Error & {
+      code?: string;
+      constraint?: string;
+      detail?: string;
+      hint?: string;
+    };
+    console.error("Admin API request failed:", {
+      name: databaseError.name,
+      message: databaseError.message,
+      code: databaseError.code,
+      constraint: databaseError.constraint,
+      detail: databaseError.detail,
+      hint: databaseError.hint,
+    });
+  } else {
+    console.error("Admin API request failed:", error);
+  }
   return NextResponse.json({ error: message }, { status: 500 });
 }
 

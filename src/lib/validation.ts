@@ -1,9 +1,10 @@
+
 import { z } from "zod";
 
 const safeImageReference = z
   .string()
   .trim()
-  .max(2048)
+  .max(2048, "Image path is too long.")
   .refine(
     (value) =>
       value === "" ||
@@ -11,17 +12,35 @@ const safeImageReference = z
         !value.startsWith("//") &&
         !value.includes("\\") &&
         !value.split("/").includes("..")),
-    "Use an existing same-site image path or upload an image.",
+    "Upload an image or use a valid same-site image path.",
   );
+
 const imageReference = safeImageReference.or(
   z.string().url().refine((value) => {
-    const url = new URL(value);
-    return url.protocol === "https:" && url.hostname === "res.cloudinary.com";
-  }, "Use a same-site image path or Cloudinary URL."),
+    try {
+      const url = new URL(value);
+      return (
+        url.protocol === "https:" &&
+        url.hostname === "res.cloudinary.com"
+      );
+    } catch {
+      return false;
+    }
+  }, "Use a valid same-site image path or HTTPS Cloudinary URL."),
 );
-const hashtagsSchema = z.array(
-  z.string().trim().regex(/^#?[a-zA-Z0-9][a-zA-Z0-9_-]{0,39}$/),
-).max(10);
+
+const hashtagsSchema = z
+  .array(
+    z
+      .string()
+      .trim()
+      .regex(
+        /^#?[a-zA-Z0-9][a-zA-Z0-9_-]{0,39}$/,
+        "Enter each hashtag separately, e.g. #trading #crypto.",
+      ),
+  )
+  .max(10, "You can add a maximum of 10 hashtags.")
+  .default([]);
 
 const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({
@@ -36,7 +55,10 @@ const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("list"),
     ordered: z.boolean().optional(),
-    items: z.array(z.string().trim().min(1).max(1000)).min(1).max(100),
+    items: z
+      .array(z.string().trim().min(1).max(1000))
+      .min(1)
+      .max(100),
   }),
   z.object({
     type: z.literal("link"),
@@ -50,7 +72,7 @@ const contentBlockSchema = z.discriminatedUnion("type", [
           (/^https?:\/\//i.test(href) ||
             (href.startsWith("/") && !href.startsWith("//"))) &&
           !/[\u0000-\u001f]/.test(href),
-        "Links must use HTTPS/HTTP or a same-site path.",
+        "Enter a valid HTTP/HTTPS URL or same-site path.",
       ),
   }),
   z.object({
@@ -67,17 +89,38 @@ export const loginSchema = z.object({
 });
 
 export const articleSchema = z.object({
-  title: z.string().trim().min(1).max(180),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Enter an article title.")
+    .max(180, "Article title must be 180 characters or fewer."),
   slug: z
     .string()
     .trim()
-    .min(1)
+    .min(1, "An article slug could not be generated from the title.")
     .max(180)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use a URL-safe lowercase slug."),
-  excerpt: z.string().trim().min(1).max(500),
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Use a valid title with English letters or numbers to generate the article URL.",
+    ),
+  excerpt: z
+    .string()
+    .trim()
+    .min(1, "Enter a short description.")
+    .max(500, "Description must be 500 characters or fewer."),
+  articleLink: z
+    .string()
+    .trim()
+    .max(2048, "Article link is too long.")
+    .refine(
+      (value) => value === "" || /^https?:\/\/[^\s]+$/i.test(value),
+      "Enter a valid link starting with https:// or http://, or leave it blank.",
+    )
+    .optional()
+    .default(""),
   content: z.array(contentBlockSchema).max(200),
   thumbnailUrl: imageReference,
-  hashtags: hashtagsSchema.default([]),
+  hashtags: hashtagsSchema,
   category: z.string().trim().max(80).optional(),
   displayOrder: z.number().int().min(0).nullable().optional(),
   status: z.enum(["draft", "published"]),

@@ -18,6 +18,7 @@ export default async function ArticlePreviewPage({
     title: string;
     slug: string;
     excerpt: string;
+    articleLink: string | null;
     content: ArticleContentBlock[];
     thumbnailUrl: string;
     category: string | null;
@@ -25,7 +26,7 @@ export default async function ArticlePreviewPage({
     createdAt: string;
     status: "draft" | "published";
   }>(
-    `SELECT title, slug, excerpt, content, thumbnail_url AS "thumbnailUrl",
+    `SELECT title, slug, excerpt, article_link AS "articleLink", content, thumbnail_url AS "thumbnailUrl",
             category, published_at AS "publishedAt", created_at AS "createdAt",
             status
      FROM articles WHERE id = $1`,
@@ -36,8 +37,7 @@ export default async function ArticlePreviewPage({
 
   return (
     <article className="mx-auto max-w-4xl">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <Link href="/admin/articles" className="text-sm text-gray-400 hover:text-[#ffd43b]">← Articles</Link>
+      <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
         <div className="flex gap-2">
           <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${article.status === "published" ? "border-green-400/30 text-green-300" : "border-amber-300/30 text-amber-200"}`}>{article.status === "published" ? "Published" : "Draft preview"}</span>
           <Link href={`/admin/articles/${id}/edit`} className="rounded-lg border border-[#ffd43b]/40 px-3 py-1.5 text-sm font-semibold text-[#ffd43b]">Edit article</Link>
@@ -57,6 +57,11 @@ export default async function ArticlePreviewPage({
         </div>
       )}
       <ArticleContent blocks={article.content} />
+      {article.articleLink && (
+        <a href={article.articleLink} target="_blank" rel="noopener noreferrer" className="mt-8 inline-flex font-semibold text-[#ffd43b] underline underline-offset-4">
+          Read the linked article ↗
+        </a>
+      )}
     </article>
   );
 }

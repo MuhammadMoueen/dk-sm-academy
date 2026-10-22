@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const limit = 25;
     const db = getDb();
     const { rows } = await db.query(
-      `SELECT id, title, slug, excerpt, hashtags, thumbnail_url AS "thumbnailUrl",
+      `SELECT id, title, slug, excerpt, article_link AS "articleLink", hashtags, thumbnail_url AS "thumbnailUrl",
               category, display_order AS "displayOrder", status,
               published_at AS "publishedAt", created_at AS "createdAt",
               updated_at AS "updatedAt"
@@ -66,6 +66,21 @@ export async function POST(request: Request) {
       images: [article.thumbnailUrl],
     })
   ) {
+    const fields = [];
+    if (!article.thumbnailUrl) {
+      fields.push({
+        path: ["thumbnailUrl"],
+        message: "Please upload a thumbnail image before publishing.",
+      });
+    }
+    if (article.content.length === 0) {
+      fields.push({
+        path: ["content"],
+        message: "A short description is required for article content.",
+      });
+    }
+    if (fields.length > 0) return validationError(fields);
+
     return NextResponse.json(
       { error: "Published articles require content and a thumbnail reference." },
       { status: 400 },
@@ -77,15 +92,16 @@ export async function POST(request: Request) {
     await client.query("BEGIN");
     const result = await client.query<{ id: string }>(
       `INSERT INTO articles
-        (title, slug, excerpt, hashtags, content, thumbnail_url, category, display_order,
+        (title, slug, excerpt, article_link, hashtags, content, thumbnail_url, category, display_order,
          status, seo_title, seo_description, published_at)
-       VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7, $8, $9, $10, $11,
-         CASE WHEN $9 = 'published' THEN NOW() ELSE NULL END)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8, $9, $10, $11, $12,
+         CASE WHEN $10 = 'published' THEN NOW() ELSE NULL END)
        RETURNING id`,
       [
         article.title,
         article.slug,
         article.excerpt,
+        article.articleLink || null,
         article.hashtags,
         JSON.stringify(article.content),
         article.thumbnailUrl,

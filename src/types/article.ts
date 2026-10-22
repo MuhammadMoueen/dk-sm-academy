@@ -12,6 +12,7 @@ export interface Article {
   title: string;
   slug: string;
   excerpt: string;
+  articleLink?: string;
   hashtags: string[];
   content: ArticleContentBlock[];
   thumbnailUrl: string;

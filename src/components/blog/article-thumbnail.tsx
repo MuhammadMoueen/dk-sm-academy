@@ -14,7 +14,7 @@ export function ArticleThumbnail({
       <div
         role="img"
         aria-label="Article thumbnail will appear when an image is uploaded"
-        className="relative flex aspect-[16/10] items-center justify-center overflow-hidden rounded-xl border border-[#ffd43b]/25 bg-[#171713]"
+        className="relative flex aspect-[16/9] items-center justify-center overflow-hidden rounded-xl border border-[#ffd43b]/25 bg-[#171713]"
       >
         <div
           aria-hidden="true"
@@ -42,13 +42,13 @@ export function ArticleThumbnail({
   }
 
   return (
-    <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#171717]">
+    <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#171717]">
       <Image
         src={src}
         alt={alt}
         fill
         sizes={sizes}
-        className="object-cover transition-transform duration-500 group-hover:scale-[1.035] motion-reduce:transition-none"
+        className="object-contain transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none"
       />
     </div>
   );

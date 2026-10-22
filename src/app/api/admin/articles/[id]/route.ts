@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
   try {
     const { rows } = await getDb().query(
-      `SELECT id, title, slug, excerpt, hashtags, content, thumbnail_url AS "thumbnailUrl",
+      `SELECT id, title, slug, excerpt, article_link AS "articleLink", hashtags, content, thumbnail_url AS "thumbnailUrl",
               category, display_order AS "displayOrder", status,
               published_at AS "publishedAt", created_at AS "createdAt",
               updated_at AS "updatedAt", seo_title AS "seoTitle",
@@ -58,6 +58,21 @@ export async function PUT(request: Request, { params }: RouteParams) {
       images: [article.thumbnailUrl],
     })
   ) {
+    const fields = [];
+    if (!article.thumbnailUrl) {
+      fields.push({
+        path: ["thumbnailUrl"],
+        message: "Please upload a thumbnail image before publishing.",
+      });
+    }
+    if (article.content.length === 0) {
+      fields.push({
+        path: ["content"],
+        message: "A short description is required for article content.",
+      });
+    }
+    if (fields.length > 0) return validationError(fields);
+
     return NextResponse.json(
       { error: "Published articles require content and a thumbnail reference." },
       { status: 400 },
@@ -77,13 +92,13 @@ export async function PUT(request: Request, { params }: RouteParams) {
     }
     await client.query(
       `UPDATE articles
-       SET title = $2, slug = $3, excerpt = $4, hashtags = $5,
-           content = $6::jsonb, thumbnail_url = $7, category = $8,
-           display_order = $9, status = $10, seo_title = $11,
-           seo_description = $12,
+       SET title = $2, slug = $3, excerpt = $4, article_link = $5, hashtags = $6,
+           content = $7::jsonb, thumbnail_url = $8, category = $9,
+           display_order = $10, status = $11, seo_title = $12,
+           seo_description = $13,
            published_at = CASE
-             WHEN $10 = 'published' AND published_at IS NULL THEN NOW()
-             WHEN $10 = 'draft' THEN NULL
+             WHEN $11 = 'published' AND published_at IS NULL THEN NOW()
+             WHEN $11 = 'draft' THEN NULL
              ELSE published_at
            END,
            updated_at = NOW()
@@ -93,6 +108,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
         article.title,
         article.slug,
         article.excerpt,
+        article.articleLink || null,
         article.hashtags,
         JSON.stringify(article.content),
         article.thumbnailUrl,

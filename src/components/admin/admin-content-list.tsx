@@ -226,9 +226,9 @@ export function AdminContentList({
             const image = article ? item.thumbnailUrl : item.transactionImage;
             return (
               <article key={item.id} className="flex min-w-0 flex-col gap-4 rounded-xl border border-white/10 bg-[#111] p-4 sm:flex-row sm:items-center sm:p-5">
-                <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden rounded-lg border border-white/10 bg-[#080808] sm:w-36">
+                <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden rounded-lg border border-white/10 bg-[#080808] sm:w-36">
                   {image ? (
-                    <Image src={image} alt="" fill sizes="144px" className="object-cover" />
+                    <Image src={image} alt="" fill sizes="144px" className={article ? "object-contain" : "object-cover"} />
                   ) : (
                     <span className="flex h-full items-center justify-center px-2 text-center text-xs text-gray-500">
                       Upload unavailable

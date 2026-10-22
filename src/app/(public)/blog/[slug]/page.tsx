@@ -87,15 +87,6 @@ async function PublishedArticle({ params }: ArticlePageProps) {
                 }).format(new Date(article.publishedAt))}
               </time>
             </p>
-            {article.hashtags.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                {article.hashtags.map((tag) => (
-                  <span key={tag} className="rounded-full border border-[#ffd43b]/25 px-3 py-1 text-xs font-semibold text-[#ffd43b]">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
           </header>
 
           <ArticleThumbnail
@@ -105,6 +96,27 @@ async function PublishedArticle({ params }: ArticlePageProps) {
           />
 
           <ArticleContent blocks={article.content} />
+
+          {article.hashtags.length > 0 && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {article.hashtags.map((tag) => (
+                <span key={tag} className="rounded-full border border-[#ffd43b]/25 px-3 py-1 text-xs font-semibold text-[#ffd43b]">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {article.articleLink && (
+            <a
+              href={article.articleLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex font-semibold text-[#ffd43b] underline underline-offset-4"
+            >
+              Read the linked article ↗
+            </a>
+          )}
 
           <div className="mt-10 border-t border-[#ffd43b]/20 pt-6 text-sm text-gray-400">
             {article.updatedAt !== article.publishedAt && (

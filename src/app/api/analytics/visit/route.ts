@@ -1,4 +1,4 @@
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { recordVisitorVisit } from "@/features/analytics/analytics";
 
@@ -19,21 +19,6 @@ function signedDay(day: string, nonce: string) {
   return `${day}.${nonce}.${createHmac("sha256", cookieSecret())
     .update(`${day}.${nonce}`)
     .digest("base64url")}`;
-}
-
-function validCookie(value: string | undefined, day: string) {
-  if (!value) return false;
-  const [cookieDay, nonce, signature] = value.split(".");
-  if (!cookieDay || !nonce || !signature || cookieDay !== day) return false;
-  const expected = createHmac("sha256", cookieSecret())
-    .update(`${cookieDay}.${nonce}`)
-    .digest("base64url");
-  const received = Buffer.from(signature);
-  const expectedBuffer = Buffer.from(expected);
-  return (
-    received.length === expectedBuffer.length &&
-    timingSafeEqual(received, expectedBuffer)
-  );
 }
 
 export async function POST(request: Request) {
@@ -66,12 +51,6 @@ export async function POST(request: Request) {
 
   const day = todayUtc();
   try {
-    if (validCookie(request.headers.get("cookie")?.match(
-      new RegExp(`(?:^|;\\s*)${VISITOR_COOKIE}=([^;]+)`),
-    )?.[1], day)) {
-      return NextResponse.json({ ok: true });
-    }
-
     await recordVisitorVisit(day);
     const response = NextResponse.json({ ok: true });
     response.cookies.set({
