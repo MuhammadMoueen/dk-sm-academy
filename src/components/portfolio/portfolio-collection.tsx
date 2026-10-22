@@ -5,20 +5,22 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { PortfolioCard } from "@/components/portfolio/portfolio-card";
 import type { PortfolioItem } from "@/types/portfolio";
 
-const CARD_WIDTH = 290;
-const MOBILE_CARD_WIDTH = 260;
 const VISIBLE_DEPTH = 5;
 
 export function PortfolioCollection({
   items,
   previewWhenEmpty = false,
   initialCount = 8,
+  fullPage = false,
 }: {
   items: PortfolioItem[];
   previewWhenEmpty?: boolean;
   initialCount?: number;
+  fullPage?: boolean;
 }) {
-  const [visibleCount, setVisibleCount] = useState(initialCount);
+  const [visibleCount, setVisibleCount] = useState(
+    fullPage ? Number.MAX_SAFE_INTEGER : initialCount,
+  );
   const stageRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -35,16 +37,17 @@ export function PortfolioCollection({
     [items],
   );
 
-  const isPreview =
-    publishedItems.length === 0 && previewWhenEmpty;
+  const isPreview = publishedItems.length === 0 && previewWhenEmpty;
 
-  const orbitItems: (PortfolioItem | undefined)[] = isPreview
+  const orbitItems = isPreview
     ? Array.from({ length: 4 }, () => undefined)
     : publishedItems;
 
   useEffect(() => {
-    const stage = stageRef.current;
+    // The full portfolio page must remain a static grid.
+    if (fullPage) return;
 
+    const stage = stageRef.current;
     if (!stage || orbitItems.length === 0) return;
 
     let animationFrame = 0;
@@ -56,8 +59,6 @@ export function PortfolioCollection({
 
       const delta = Math.min(time - previousTime, 40);
       previousTime = time;
-
-      // Continuous rotation. Hover never pauses the orbit.
       rotation += delta * 0.00024;
 
       const width = stage.clientWidth;
@@ -80,9 +81,7 @@ export function PortfolioCollection({
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
 
-        const angle =
-          rotation + (index * Math.PI * 2) / count;
-
+        const angle = rotation + (index * Math.PI * 2) / count;
         const x = Math.sin(angle) * radiusX;
         const z = Math.cos(angle) * radiusZ;
         const y = Math.sin(angle * 2) * radiusY;
@@ -93,15 +92,11 @@ export function PortfolioCollection({
         const tilt = -Math.sin(angle) * 10;
 
         card.style.transform =
-          `translate(-50%, -50%) ` +
-          `translate3d(${x}px, ${y}px, ${z}px) ` +
+          `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${z}px) ` +
           `scale(${scale}) rotateY(${tilt}deg)`;
 
         card.style.opacity = String(opacity);
         card.style.zIndex = String(Math.round(depth * 100));
-
-        // Keep cards at the back subtle without removing them
-        // from the orbit or stopping their movement.
         card.style.filter =
           depth < 0.25 ? "brightness(0.72)" : "brightness(1)";
       });
@@ -111,10 +106,8 @@ export function PortfolioCollection({
 
     animationFrame = window.requestAnimationFrame(animate);
 
-    return () => {
-      window.cancelAnimationFrame(animationFrame);
-    };
-  }, [orbitItems.length]);
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [fullPage, orbitItems.length]);
 
   if (publishedItems.length === 0 && !previewWhenEmpty) {
     return (
@@ -130,8 +123,23 @@ export function PortfolioCollection({
     );
   }
 
-  const visibleItems = publishedItems.slice(0, visibleCount);
+  const visibleItems = publishedItems.slice(
+    0,
+    fullPage ? publishedItems.length : visibleCount,
+  );
 
+  // View All page: every published card appears in a static grid.
+  if (fullPage) {
+    return (
+      <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        {visibleItems.map((item) => (
+          <PortfolioCard key={item.id} item={item} />
+        ))}
+      </div>
+    );
+  }
+
+  // Homepage: preserve the existing animated orbit.
   return (
     <>
       <div
