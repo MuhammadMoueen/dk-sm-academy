@@ -42,11 +42,12 @@ export function ArticleThumbnail({
   }
 
   return (
-    <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#171717]">
+    <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-white/10 bg-[#111]">
       <Image
         src={src}
         alt={alt}
         fill
+        loading="eager"
         sizes={sizes}
         className="object-contain transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transition-none"
       />

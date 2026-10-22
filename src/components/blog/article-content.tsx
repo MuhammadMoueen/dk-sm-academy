@@ -12,7 +12,7 @@ export function ArticleContent({
   blocks: ArticleContentBlock[];
 }) {
   return (
-    <div className="article-content space-y-6">
+    <div className="article-content mt-8 space-y-7 sm:mt-10 sm:space-y-9">
       {blocks.map((block, index) => {
         switch (block.type) {
           case "heading": {
@@ -20,7 +20,7 @@ export function ArticleContent({
             return (
               <Heading
                 key={`${block.type}-${index}`}
-                className="!mt-10 !font-bold !text-white"
+                className="!mt-10 !font-bold !leading-tight !text-white first:!mt-0"
               >
                 {block.text}
               </Heading>
@@ -30,7 +30,7 @@ export function ArticleContent({
             return (
               <p
                 key={`${block.type}-${index}`}
-                className="leading-8 text-gray-300"
+                className="text-base leading-8 text-gray-300 sm:text-lg sm:leading-9"
               >
                 {block.text}
               </p>
@@ -40,7 +40,7 @@ export function ArticleContent({
             return (
               <List
                 key={`${block.type}-${index}`}
-                className={`space-y-2 pl-6 leading-7 text-gray-300 ${
+                className={`space-y-3 pl-6 text-base leading-8 text-gray-300 sm:text-lg ${
                   block.ordered ? "list-decimal" : "list-disc marker:text-[#ffd43b]"
                 }`}
               >
@@ -74,7 +74,7 @@ export function ArticleContent({
             return (
               <figure
                 key={`${block.type}-${index}`}
-                className="my-8 overflow-hidden rounded-2xl border border-[#ffd43b]/20 bg-[#111]"
+                className="my-10 overflow-hidden rounded-2xl border border-white/10 bg-[#111]"
               >
                 <Image
                   src={block.src}
@@ -83,7 +83,7 @@ export function ArticleContent({
                   height={750}
                   unoptimized
                   sizes="(min-width: 900px) 800px, 100vw"
-                  className="h-auto w-full object-cover"
+                  className="h-auto max-h-[720px] w-full object-contain"
                 />
                 {block.caption && (
                   <figcaption className="px-4 py-3 text-center text-sm text-gray-400">

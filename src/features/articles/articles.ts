@@ -10,9 +10,9 @@ type ArticleRow = {
   slug: string;
   excerpt: string;
   article_link: string | null;
-  hashtags: string[];
-  content: ArticleContentBlock[];
-  thumbnail_url: string;
+  hashtags: string[] | null;
+  content: ArticleContentBlock[] | null;
+  thumbnail_url: string | null;
   category: string | null;
   display_order: number | null;
   status: ContentStatus;
@@ -27,11 +27,11 @@ function mapArticle(row: ArticleRow): Article {
     id: row.id,
     title: row.title,
     slug: row.slug,
-    excerpt: row.excerpt,
-    articleLink: row.article_link ?? undefined,
+    excerpt: row.excerpt ?? "",
+    articleLink: row.article_link?.trim() || undefined,
     hashtags: row.hashtags ?? [],
-    content: row.content,
-    thumbnailUrl: row.thumbnail_url,
+    content: row.content ?? [],
+    thumbnailUrl: row.thumbnail_url ?? "",
     category: row.category ?? undefined,
     displayOrder: row.display_order ?? undefined,
     status: row.status,
@@ -43,36 +43,62 @@ function mapArticle(row: ArticleRow): Article {
 }
 
 const articleColumns = `
-  id, title, slug, excerpt, article_link, hashtags, content, thumbnail_url, category, display_order,
-  status, published_at, updated_at, seo_title, seo_description
+  id,
+  title,
+  slug,
+  excerpt,
+  article_link,
+  hashtags,
+  content,
+  thumbnail_url,
+  category,
+  display_order,
+  status,
+  published_at,
+  updated_at,
+  seo_title,
+  seo_description
 `;
 
-export async function getPublishedArticles() {
+export async function getPublishedArticles(): Promise<Article[]> {
   const { rows } = await getDb().query<ArticleRow>(
     `SELECT ${articleColumns}
      FROM articles
      WHERE status = 'published'
-     ORDER BY display_order ASC NULLS LAST, published_at DESC, created_at DESC`,
+     ORDER BY display_order ASC NULLS LAST,
+              published_at DESC,
+              created_at DESC`,
   );
+
   return rows.map(mapArticle);
 }
 
-export async function getPublishedArticleBySlug(slug: string) {
+export async function getPublishedArticleBySlug(
+  slug: string,
+): Promise<Article | undefined> {
   const { rows } = await getDb().query<ArticleRow>(
     `SELECT ${articleColumns}
      FROM articles
-     WHERE slug = $1 AND status = 'published'
+     WHERE slug = $1
+       AND status = 'published'
      LIMIT 1`,
     [slug],
   );
+
   return rows[0] ? mapArticle(rows[0]) : undefined;
 }
 
-export async function getArticleById(id: string) {
+export async function getArticleById(
+  id: string,
+): Promise<Article | undefined> {
   const { rows } = await getDb().query<ArticleRow>(
-    `SELECT ${articleColumns} FROM articles WHERE id = $1`,
+    `SELECT ${articleColumns}
+     FROM articles
+     WHERE id = $1
+     LIMIT 1`,
     [id],
   );
+
   return rows[0] ? mapArticle(rows[0]) : undefined;
 }
 
@@ -86,7 +112,7 @@ export async function listArticles({
   status?: ContentStatus;
   limit?: number;
   offset?: number;
-} = {}) {
+} = {}): Promise<Article[]> {
   const { rows } = await getDb().query<ArticleRow>(
     `SELECT ${articleColumns}
      FROM articles
@@ -94,22 +120,34 @@ export async function listArticles({
        AND ($2::text IS NULL OR status = $2)
      ORDER BY updated_at DESC
      LIMIT $3 OFFSET $4`,
-    [search, status ?? null, Math.min(limit, 100), Math.max(0, offset)],
+    [
+      search,
+      status ?? null,
+      Math.min(Math.max(limit, 1), 100),
+      Math.max(0, offset),
+    ],
   );
+
   return rows.map(mapArticle);
 }
 
-export async function getArticleCounts() {
+export async function getArticleCounts(): Promise<{
+  total: number;
+  published: number;
+  draft: number;
+}> {
   const { rows } = await getDb().query<{
     total: string;
     published: string;
     draft: string;
   }>(
-    `SELECT COUNT(*)::text AS total,
+    `SELECT
+       COUNT(*)::text AS total,
        COUNT(*) FILTER (WHERE status = 'published')::text AS published,
        COUNT(*) FILTER (WHERE status = 'draft')::text AS draft
      FROM articles`,
   );
+
   return {
     total: Number(rows[0]?.total ?? 0),
     published: Number(rows[0]?.published ?? 0),

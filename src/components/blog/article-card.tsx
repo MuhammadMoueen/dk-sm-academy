@@ -11,51 +11,65 @@ export function ArticleCard({
 }) {
   const content = (
     <>
-      <ArticleThumbnail
-        src={article?.thumbnailUrl ?? ""}
-        alt={article ? `${article.title} article thumbnail` : ""}
-        sizes="(min-width: 1280px) 280px, (min-width: 640px) 45vw, 86vw"
-      />
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
+      <div className="overflow-hidden">
+        <ArticleThumbnail
+          src={article?.thumbnailUrl ?? ""}
+          alt={article ? `${article.title} article thumbnail` : "Article thumbnail preview"}
+          sizes="(min-width: 1280px) 280px, (min-width: 640px) 45vw, 86vw"
+        />
+      </div>
+
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         {article?.category && (
-          <span className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-[#ffd43b]">
+          <span className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#ffd43b]">
             {article.category}
           </span>
         )}
-        <h3 className="mb-2 text-lg font-bold leading-snug !text-[#ffd43b] sm:text-xl">
+
+        <h3 className="mb-2 line-clamp-2 text-base font-bold leading-snug text-white transition-colors duration-200 group-hover:text-[#ffd43b] sm:text-lg">
           {article?.title ?? "Article title"}
         </h3>
-        <p className="mb-5 flex-1 text-sm leading-relaxed text-gray-300">
+
+        <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-gray-300">
           {article?.excerpt ??
             (preview
               ? "A concise introduction to an educational article will appear here once it is published."
               : "Article summary")}
         </p>
+
         {article?.hashtags?.length ? (
-          <div className="mb-4 flex flex-wrap gap-2">
-            {article.hashtags.map((tag) => (
-              <span key={tag} className="text-xs font-semibold text-[#ffd43b]">{tag}</span>
+          <div className="mb-3 flex flex-wrap gap-x-2 gap-y-1">
+            {article.hashtags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-semibold text-[#ffd43b]"
+              >
+                {tag.startsWith("#") ? tag : `#${tag}`}
+              </span>
             ))}
           </div>
         ) : null}
-        {article ? (
-          <Link
-            href={`/blog/${article.slug}`}
-            className="site-btn-primary inline-flex w-fit"
-          >
-            Read Article <span aria-hidden="true">→</span>
-          </Link>
-        ) : (
-          <span className="inline-flex min-h-10 w-fit items-center font-semibold text-gray-500">
-            {preview ? "Read Article · Coming soon" : "Not published"}
-          </span>
-        )}
+
+        <div className="mt-auto pt-1">
+          {article ? (
+            <Link
+              href={`/blog/${article.slug}`}
+              className="site-btn-primary inline-flex min-h-9 items-center gap-2 px-4 py-2 text-sm"
+            >
+              Read More <span aria-hidden="true">→</span>
+            </Link>
+          ) : (
+            <span className="inline-flex min-h-9 items-center text-sm font-semibold text-gray-500">
+              {preview ? "Read More · Coming soon" : "Not published"}
+            </span>
+          )}
+        </div>
       </div>
     </>
   );
 
   const className =
-    "group flex min-w-0 snap-start flex-col overflow-hidden rounded-2xl border border-[#ffd43b]/25 bg-[#111] shadow-[0_12px_34px_rgba(0,0,0,0.3)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/55 hover:shadow-[0_16px_40px_rgba(255,207,50,0.09)] motion-reduce:transform-none motion-reduce:transition-none";
+    "group flex h-full min-w-0 snap-start flex-col overflow-hidden rounded-xl border border-[#ffd43b]/25 bg-[#111] shadow-[0_8px_24px_rgba(0,0,0,0.25)] transition duration-300 hover:-translate-y-1 hover:border-[#ffd43b]/60 hover:shadow-[0_12px_30px_rgba(255,207,50,0.09)] motion-reduce:transform-none motion-reduce:transition-none";
 
   return article ? (
     <article className={className}>{content}</article>
