@@ -1,7 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { requireApiAdmin, jsonError } from "@/lib/admin-api";
-import { uploadImage } from "@/lib/cloudinary";
+import {
+  CloudinaryConfigurationError,
+  CloudinaryUploadError,
+  uploadImage,
+} from "@/lib/cloudinary";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 const kinds = {
@@ -47,6 +51,37 @@ export async function POST(request: Request) {
     const result = await uploadImage(buffer, kinds[kind], `${auth.account.id}-${randomUUID()}`);
     return NextResponse.json({ url: result.secureUrl, type });
   } catch (error) {
+    if (error instanceof CloudinaryConfigurationError) {
+      console.error("Admin image upload configuration error:", {
+        message: error.message,
+        cloudNameConfigured: Boolean(process.env.CLOUDINARY_CLOUD_NAME),
+        apiKeyConfigured: Boolean(process.env.CLOUDINARY_API_KEY),
+        apiSecretConfigured: Boolean(process.env.CLOUDINARY_API_SECRET),
+      });
+      return NextResponse.json(
+        { error: "Image uploads are not configured on the server." },
+        { status: 503 },
+      );
+    }
+
+    if (error instanceof CloudinaryUploadError) {
+      console.error("Admin image upload provider error:", {
+        message: error.message,
+        providerStatus: error.providerStatus,
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "unset",
+      });
+      if (error.providerStatus === 401) {
+        return NextResponse.json(
+          { error: "Image storage rejected the server configuration." },
+          { status: 502 },
+        );
+      }
+      return NextResponse.json(
+        { error: "Image storage could not complete the upload." },
+        { status: 502 },
+      );
+    }
+
     return jsonError(error, "Image upload could not be completed.");
   }
 }

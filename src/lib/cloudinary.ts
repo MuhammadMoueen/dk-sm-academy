@@ -4,13 +4,30 @@ import { v2 as cloudinary } from "cloudinary";
 
 let configured = false;
 
+export class CloudinaryConfigurationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CloudinaryConfigurationError";
+  }
+}
+
+export class CloudinaryUploadError extends Error {
+  readonly providerStatus?: number;
+
+  constructor(message: string, providerStatus?: number) {
+    super(message);
+    this.name = "CloudinaryUploadError";
+    this.providerStatus = providerStatus;
+  }
+}
+
 function configureCloudinary() {
   if (configured) return;
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
   const apiKey = process.env.CLOUDINARY_API_KEY;
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
   if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error(
+    throw new CloudinaryConfigurationError(
       "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.",
     );
   }
@@ -35,7 +52,15 @@ export async function uploadImage(
       },
       (error, result) => {
         if (error || !result?.secure_url) {
-          reject(error ?? new Error("Cloudinary did not return an image URL."));
+          const providerError = error as
+            | { message?: string; http_code?: number }
+            | undefined;
+          reject(
+            new CloudinaryUploadError(
+              providerError?.message ?? "Cloudinary did not return an image URL.",
+              providerError?.http_code,
+            ),
+          );
           return;
         }
         resolve({ secureUrl: result.secure_url });

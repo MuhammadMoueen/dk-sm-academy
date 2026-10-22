@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { requireApiAdmin, jsonError, validationError } from "@/lib/admin-api";
 import { getDb } from "@/lib/db";
@@ -37,6 +38,7 @@ export async function PUT(request: Request) {
     if (!account) {
       return NextResponse.json({ error: "Admin account not found." }, { status: 404 });
     }
+    revalidatePath("/admin", "layout");
     return NextResponse.json({
       account: {
         id: account.id,

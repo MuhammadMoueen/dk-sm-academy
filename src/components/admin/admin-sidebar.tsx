@@ -17,18 +17,6 @@ export function AdminSidebar({ account }: { account: AdminAccount }) {
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <AdminNavigation />
       </div>
-      <div className="mt-6 flex items-center gap-3 border-t border-white/10 px-3 pt-4">
-        <span className="relative grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full border border-[#ffd43b]/70 bg-[#242015] text-sm font-bold text-[#ffd43b]">
-          {account.avatarUrl ? (
-            <Image src={account.avatarUrl} alt="" fill sizes="36px" className="object-cover" />
-          ) : (
-            account.displayName.trim().charAt(0).toUpperCase()
-          )}
-        </span>
-        <span className="min-w-0">
-          <span className="block truncate text-sm font-semibold text-white">{account.displayName}</span>
-        </span>
-      </div>
     </aside>
   );
 }
