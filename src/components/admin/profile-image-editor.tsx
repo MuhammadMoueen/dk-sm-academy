@@ -527,7 +527,7 @@ function PortfolioImageEditor({
   );
 }
 
-export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
+export function ProfileImageEditor({ reviewId }: { reviewId?: string }) {
   const [form, setForm] = useState<PortfolioFormData>(emptyForm);
   const [loading, setLoading] = useState(Boolean(reviewId));
   const [saving, setSaving] = useState(false);

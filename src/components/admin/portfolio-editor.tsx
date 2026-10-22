@@ -3,11 +3,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type PointerEvent,
+  type WheelEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { PortfolioCard } from "@/components/portfolio/portfolio-card";
 import type { PortfolioItem } from "@/types/portfolio";
-import { ImageUploadField } from "@/components/admin/image-upload-field";
+
+type ImageKind = "client-image" | "transaction-image";
 
 type PortfolioFormData = {
   clientName: string;
@@ -33,6 +41,491 @@ const inputClass =
   "min-h-11 w-full rounded-lg border border-white/15 bg-[#090909] px-3 text-white outline-none focus:border-[#ffd43b] focus:ring-2 focus:ring-[#ffd43b]/15";
 
 const labelClass = "mb-1.5 block text-sm font-semibold text-gray-200";
+
+const MAX_BYTES = 8 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
+type Point = { x: number; y: number };
+
+function PortfolioImageEditor({
+  kind,
+  label,
+  currentUrl,
+  onUploaded,
+}: {
+  kind: ImageKind;
+  label: string;
+  currentUrl: string;
+  onUploaded: (url: string) => void;
+}) {
+  const isClient = kind === "client-image";
+  const frameWidth = isClient ? 256 : 320;
+  const frameHeight = isClient ? 256 : 180;
+  const outputWidth = isClient ? 512 : 1280;
+  const outputHeight = isClient ? 512 : 720;
+
+  const [file, setFile] = useState<File | null>(null);
+  const [source, setSource] = useState("");
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
+  const [rotation, setRotation] = useState(0);
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState("");
+  const [uploading, setUploading] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const sourceRef = useRef("");
+  const pointers = useRef(new Map<number, Point>());
+  const pinch = useRef<{ distance: number; zoom: number } | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (sourceRef.current) URL.revokeObjectURL(sourceRef.current);
+    };
+  }, []);
+
+  function clearSource() {
+    if (sourceRef.current) URL.revokeObjectURL(sourceRef.current);
+    sourceRef.current = "";
+    setSource("");
+    setDimensions({ width: 0, height: 0 });
+  }
+
+  function choose(next?: File) {
+    if (!next) return;
+
+    if (!ALLOWED_TYPES.includes(next.type)) {
+      setError("Choose a JPG, PNG, or WebP image.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    if (next.size > MAX_BYTES) {
+      setError("Image must be smaller than 8 MB.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    clearSource();
+    const url = URL.createObjectURL(next);
+    sourceRef.current = url;
+    setSource(url);
+    setFile(next);
+    setZoom(1);
+    setX(0);
+    setY(0);
+    setRotation(0);
+    setError("");
+    setStatus("");
+    pointers.current.clear();
+    pinch.current = null;
+  }
+
+  const baseScale =
+    dimensions.width && dimensions.height
+      ? Math.max(
+          frameWidth / dimensions.width,
+          frameHeight / dimensions.height,
+        )
+      : 1;
+
+  const imageWidth = dimensions.width * baseScale;
+  const imageHeight = dimensions.height * baseScale;
+
+  function clampPosition(nextX: number, nextY: number, nextZoom = zoom) {
+    const angle = ((rotation % 180) + 180) % 180;
+    const rotatedWidth = angle === 90 ? imageHeight : imageWidth;
+    const rotatedHeight = angle === 90 ? imageWidth : imageHeight;
+    const width = rotatedWidth * nextZoom;
+    const height = rotatedHeight * nextZoom;
+
+    return {
+      x: Math.max(
+        -Math.max(0, (width - frameWidth) / 2),
+        Math.min(Math.max(0, (width - frameWidth) / 2), nextX),
+      ),
+      y: Math.max(
+        -Math.max(0, (height - frameHeight) / 2),
+        Math.min(Math.max(0, (height - frameHeight) / 2), nextY),
+      ),
+    };
+  }
+
+  function changeZoom(value: number) {
+    const nextZoom = Math.max(1, Math.min(4, value));
+    const next = clampPosition(x, y, nextZoom);
+    setZoom(nextZoom);
+    setX(next.x);
+    setY(next.y);
+  }
+
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (uploading) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointers.current.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    if (pointers.current.size === 2) {
+      const [a, b] = Array.from(pointers.current.values());
+      pinch.current = {
+        distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
+        zoom,
+      };
+    }
+  }
+
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    const previous = pointers.current.get(event.pointerId);
+    if (!previous) return;
+
+    const current = { x: event.clientX, y: event.clientY };
+    pointers.current.set(event.pointerId, current);
+
+    if (pointers.current.size >= 2 && pinch.current) {
+      const [a, b] = Array.from(pointers.current.values());
+      const distance = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
+      changeZoom(pinch.current.zoom * (distance / pinch.current.distance));
+      return;
+    }
+
+    const next = clampPosition(
+      x + current.x - previous.x,
+      y + current.y - previous.y,
+    );
+    setX(next.x);
+    setY(next.y);
+  }
+
+  function handlePointerEnd(event: PointerEvent<HTMLDivElement>) {
+    pointers.current.delete(event.pointerId);
+    pinch.current = null;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  function handleWheel(event: WheelEvent<HTMLDivElement>) {
+    event.preventDefault();
+    changeZoom(zoom - event.deltaY * 0.003);
+  }
+
+  function cancelEditor() {
+    if (uploading) return;
+    setFile(null);
+    clearSource();
+    setZoom(1);
+    setX(0);
+    setY(0);
+    setRotation(0);
+    setError("");
+    setStatus("");
+    pointers.current.clear();
+    pinch.current = null;
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
+  async function applyImage() {
+    if (!file || !source || !dimensions.width || uploading) return;
+
+    setUploading(true);
+    setError("");
+    setStatus("Preparing cropped image…");
+
+    try {
+      const image = imageRef.current;
+      if (!image) throw new Error("Image preview is not ready.");
+
+      const canvas = document.createElement("canvas");
+      canvas.width = outputWidth;
+      canvas.height = outputHeight;
+
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas is unavailable in this browser.");
+
+      context.fillStyle = "#090909";
+      context.fillRect(0, 0, outputWidth, outputHeight);
+
+      const scale =
+        Math.max(
+          outputWidth / image.naturalWidth,
+          outputHeight / image.naturalHeight,
+        ) * zoom;
+
+      context.save();
+      context.translate(
+        outputWidth / 2 + (x * outputWidth) / frameWidth,
+        outputHeight / 2 + (y * outputHeight) / frameHeight,
+      );
+      context.rotate((rotation * Math.PI) / 180);
+      context.drawImage(
+        image,
+        (-image.naturalWidth * scale) / 2,
+        (-image.naturalHeight * scale) / 2,
+        image.naturalWidth * scale,
+        image.naturalHeight * scale,
+      );
+      context.restore();
+
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", 0.92),
+      );
+
+      if (!blob) throw new Error("Could not generate the cropped image.");
+
+      setStatus("Uploading image to Cloudinary…");
+
+      const body = new FormData();
+      body.append("kind", kind);
+      body.append(
+        "file",
+        new File([blob], `${kind}.jpg`, { type: "image/jpeg" }),
+      );
+
+      const response = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body,
+      });
+
+      const result = (await response.json()) as {
+        url?: string;
+        error?: string;
+      };
+
+      if (!response.ok || !result.url) {
+        throw new Error(result.error ?? "Image upload failed.");
+      }
+
+      onUploaded(result.url);
+      setStatus("Image uploaded successfully.");
+      setFile(null);
+      clearSource();
+      setZoom(1);
+      setX(0);
+      setY(0);
+      setRotation(0);
+      if (inputRef.current) inputRef.current.value = "";
+    } catch (caught) {
+      setError(
+        caught instanceof Error ? caught.message : "Unable to upload image.",
+      );
+      setStatus("");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div className="min-w-0 space-y-3">
+      <label
+        htmlFor={`${kind}-file`}
+        className="block text-sm font-semibold text-gray-200"
+      >
+        {label}
+      </label>
+
+      {currentUrl && (
+        <div className="mb-3">
+          <p className="mb-2 text-xs text-gray-400">Current image</p>
+          <div
+            className={`relative overflow-hidden border border-[#ffd43b]/30 ${
+              isClient
+                ? "h-28 w-28 rounded-full"
+                : "aspect-video w-full max-w-md rounded-lg"
+            }`}
+          >
+            <Image
+              src={currentUrl}
+              alt={label}
+              fill
+              sizes={isClient ? "112px" : "(max-width: 768px) 100vw, 448px"}
+              className="object-cover"
+            />
+          </div>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        id={`${kind}-file`}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        disabled={uploading}
+        onChange={(event) => choose(event.target.files?.[0])}
+        className="block min-h-11 w-full text-sm text-gray-400 file:mr-3 file:rounded-lg file:border-0 file:bg-[#ffd43b]/15 file:px-3 file:py-2 file:font-semibold file:text-[#ffd43b] hover:file:bg-[#ffd43b]/25 disabled:opacity-50"
+      />
+
+      {file && source && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/85 p-3 backdrop-blur-sm sm:p-5">
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={`${kind}-editor-title`}
+            className="my-auto w-full max-w-md rounded-2xl border border-[#ffd43b]/35 bg-[#090909] p-4 shadow-2xl sm:p-5"
+          >
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h2
+                id={`${kind}-editor-title`}
+                className="text-xl font-bold text-white"
+              >
+                Edit <span className="text-[#ffd43b]">image</span>
+              </h2>
+              <button
+                type="button"
+                onClick={cancelEditor}
+                disabled={uploading}
+                aria-label="Close image editor"
+                className="rounded-lg px-2 py-1 text-xl text-gray-400 hover:text-white disabled:opacity-50"
+              >
+                ×
+              </button>
+            </div>
+
+            <p className="mb-4 text-xs text-gray-400">
+              Drag the image to position it. Use the wheel or pinch to zoom.
+              {isClient
+                ? " The client photo will be cropped square."
+                : " The transaction screenshot will be cropped to 16:9."}
+            </p>
+
+            <div
+              className="mx-auto touch-none select-none overflow-hidden border-2 border-[#ffd43b] bg-black cursor-grab active:cursor-grabbing"
+              style={{
+                width: "min(100%, 320px)",
+                aspectRatio: `${frameWidth} / ${frameHeight}`,
+                borderRadius: isClient ? "50%" : "12px",
+              }}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerEnd}
+              onPointerCancel={handlePointerEnd}
+              onWheel={handleWheel}
+            >
+              <div
+                className="relative h-full w-full overflow-hidden"
+                style={{ aspectRatio: `${frameWidth} / ${frameHeight}` }}
+              >
+                <img
+                  ref={imageRef}
+                  src={source}
+                  alt="Image crop preview"
+                  draggable={false}
+                  onLoad={(event) =>
+                    setDimensions({
+                      width: event.currentTarget.naturalWidth,
+                      height: event.currentTarget.naturalHeight,
+                    })
+                  }
+                  className="pointer-events-none absolute left-1/2 top-1/2 max-w-none"
+                  style={{
+                    width: imageWidth || "100%",
+                    height: imageHeight || "100%",
+                    marginLeft: -(imageWidth || frameWidth) / 2,
+                    marginTop: -(imageHeight || frameHeight) / 2,
+                    transform: `translate(${x}px, ${y}px) scale(${zoom}) rotate(${rotation}deg)`,
+                    transformOrigin: "center center",
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <span className="text-sm text-gray-300">Zoom</span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => changeZoom(zoom - 0.25)}
+                  disabled={zoom <= 1 || uploading}
+                  className="h-9 w-9 rounded-lg border border-white/20 text-lg text-white disabled:opacity-40"
+                >
+                  −
+                </button>
+                <button
+                  type="button"
+                  onClick={() => changeZoom(zoom + 0.25)}
+                  disabled={zoom >= 4 || uploading}
+                  className="h-9 w-9 rounded-lg border border-white/20 text-lg text-white disabled:opacity-40"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <span className="text-sm text-gray-300">Rotate</span>
+              <button
+                type="button"
+                onClick={() => setRotation((value) => (value + 90) % 360)}
+                disabled={uploading}
+                className="min-h-10 rounded-lg border border-white/20 px-3 text-sm font-semibold text-[#ffd43b] hover:border-[#ffd43b] disabled:opacity-50"
+              >
+                Rotate 90°
+              </button>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                disabled={uploading}
+                className="min-h-11 rounded-lg border border-white/20 px-2 text-sm font-semibold text-gray-200 disabled:opacity-50"
+              >
+                Choose different
+              </button>
+              <button
+                type="button"
+                onClick={cancelEditor}
+                disabled={uploading}
+                className="min-h-11 rounded-lg border border-white/20 px-3 text-sm font-semibold text-gray-200 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void applyImage()}
+                disabled={uploading || !dimensions.width}
+                className="btn-primary col-span-2 min-h-11 disabled:opacity-50 sm:col-span-1"
+              >
+                {uploading ? "Uploading…" : "Apply image"}
+              </button>
+            </div>
+
+            {status && (
+              <p role="status" className="mb-0 mt-3 text-xs text-[#ffd43b]">
+                {status}
+              </p>
+            )}
+            {error && (
+              <p role="alert" className="mb-0 mt-3 text-xs text-red-300">
+                {error}
+              </p>
+            )}
+          </section>
+        </div>
+      )}
+
+      {!file && status && (
+        <p role="status" className="text-xs text-green-300">
+          {status}
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="text-xs text-red-300">
+          {error}
+        </p>
+      )}
+      <p className="text-xs text-gray-500">
+        JPG, PNG, or WebP · Maximum 8 MB
+      </p>
+    </div>
+  );
+}
 
 export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
   const [form, setForm] = useState<PortfolioFormData>(emptyForm);
@@ -67,7 +560,6 @@ export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
         }
 
         if (!mounted) return;
-
         const review = result.review;
 
         setForm({
@@ -118,7 +610,6 @@ export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
           ? ""
           : "Upload a transaction image before publishing.",
       });
-
       setError("Upload both images before publishing this review.");
       return;
     }
@@ -283,78 +774,39 @@ export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
 
         <section className="rounded-xl border border-white/10 bg-[#111] p-4 sm:p-6">
           <h2 className="mb-2 text-lg font-bold">Images</h2>
-          <p className="mb-4 text-sm text-amber-200">
-            PNG, JPEG, and WebP images up to 8 MB are stored securely in Cloudinary.
+          <p className="mb-5 text-sm text-amber-200">
+            Choose each image, adjust its crop, zoom or rotation, then apply it
+            to upload the edited image to Cloudinary.
           </p>
 
           <div className="grid gap-6 sm:grid-cols-2">
-            <div className="min-w-0 space-y-3">
-              <ImageUploadField
-                id="client-image-file"
-                label="Upload client photo"
+            <div className="min-w-0">
+              <PortfolioImageEditor
                 kind="client-image"
+                label="Client photo"
                 currentUrl={form.clientImage}
                 onUploaded={(url) => change("clientImage", url)}
               />
-
               {fieldErrors.clientImage && (
-                <p className="mb-0 text-sm text-red-300">
+                <p className="mb-0 mt-2 text-sm text-red-300">
                   {fieldErrors.clientImage}
                 </p>
               )}
             </div>
 
-            <div className="min-w-0 space-y-3">
-              <ImageUploadField
-                id="transaction-image-file"
-                label="Upload transaction image"
+            <div className="min-w-0">
+              <PortfolioImageEditor
                 kind="transaction-image"
+                label="Transaction / deal screenshot"
                 currentUrl={form.transactionImage}
                 onUploaded={(url) => change("transactionImage", url)}
               />
-
               {fieldErrors.transactionImage && (
-                <p className="mb-0 text-sm text-red-300">
+                <p className="mb-0 mt-2 text-sm text-red-300">
                   {fieldErrors.transactionImage}
                 </p>
               )}
             </div>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {form.clientImage && (
-              <div>
-                <p className="mb-2 text-xs text-gray-400">
-                  Client photo preview
-                </p>
-                <div className="relative aspect-square max-w-48 overflow-hidden rounded-full border border-[#ffd43b]/30">
-                  <Image
-                    src={form.clientImage}
-                    alt={`${form.clientName || "Client"} preview`}
-                    fill
-                    sizes="192px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            )}
-
-            {form.transactionImage && (
-              <div>
-                <p className="mb-2 text-xs text-gray-400">
-                  Transaction image preview
-                </p>
-                <div className="relative aspect-[16/9] max-w-lg overflow-hidden rounded-lg border border-[#ffd43b]/30">
-                  <Image
-                    src={form.transactionImage}
-                    alt="Transaction screenshot preview"
-                    fill
-                    sizes="600px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </section>
 
@@ -390,7 +842,7 @@ export function PortfolioEditor({ reviewId }: { reviewId?: string }) {
               onClick={() => void save("draft")}
               className="min-h-11 rounded-lg border border-[#ffd43b]/40 px-4 text-sm font-semibold text-[#ffd43b] disabled:opacity-50"
             >
-              Save Draft
+              {saving ? "Saving…" : "Save Draft"}
             </button>
 
             <button
