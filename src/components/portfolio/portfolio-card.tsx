@@ -124,7 +124,10 @@ export function PortfolioCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
-            <h3 className="min-w-0 break-words text-base font-bold leading-snug text-[#ffd43b] sm:text-lg">
+            <h3
+              style={{ color: "#FFD43B", fontWeight: 900 }}
+              className="min-w-0 break-words text-base leading-snug sm:text-lg"
+            >
               {item?.clientName ?? "Client name"}
             </h3>
 
