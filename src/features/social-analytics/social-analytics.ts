@@ -167,6 +167,13 @@ export async function getConnection(provider: SocialProvider) {
   return result.rows[0];
 }
 
+export async function deleteConnection(provider: SocialProvider) {
+  await getDb().query(
+    "DELETE FROM social_provider_connections WHERE provider = $1",
+    [provider],
+  );
+}
+
 export async function recordSocialMetric(
   provider: SocialProvider,
   accountId: string,

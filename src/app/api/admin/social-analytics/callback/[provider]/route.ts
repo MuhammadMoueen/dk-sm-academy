@@ -6,6 +6,7 @@ import {
 } from "@/features/social-analytics/oauth";
 import {
   SOCIAL_PROVIDERS,
+  encryptSecret,
   type SocialProvider,
 } from "@/features/social-analytics/social-analytics";
 import { getAdminSession } from "@/lib/auth";
@@ -62,7 +63,27 @@ export async function GET(
   }
 
   try {
-    await completeOAuth(provider, code, provider === "tiktok" ? codeVerifier : undefined);
+    const result = await completeOAuth(
+      provider,
+      code,
+      provider === "tiktok" ? codeVerifier : undefined,
+    );
+    if (provider === "facebook") {
+      if (!result || result.provider !== "facebook") {
+        throw new Error("Facebook authorization returned incomplete account data.");
+      }
+      cookieStore.set(
+        "social_oauth_facebook_pending",
+        encryptSecret(JSON.stringify(result)),
+        {
+          httpOnly: true,
+          sameSite: "lax",
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 600,
+          path: "/",
+        },
+      );
+    }
     cookieStore.delete(stateCookieName);
     if (provider === "tiktok") cookieStore.delete("social_oauth_tiktok_verifier");
 

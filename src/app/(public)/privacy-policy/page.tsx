@@ -55,6 +55,23 @@ export default function PrivacyPolicyPage() {
         </p>
       </ContentSection>
 
+      <ContentSection title="Facebook connection and Page analytics">
+        <p>
+          An authenticated administrator may connect a Facebook account to
+          select an accessible Facebook Page and view supported Page metrics.
+          The integration receives the permissions requested in the Facebook
+          authorization screen and uses the selected Page access token only
+          for the connected analytics feature.
+        </p>
+        <p>
+          Access tokens are exchanged and stored on the server in encrypted
+          form. They are not returned to browser code or displayed in the
+          dashboard. Disconnecting Facebook removes the local connection and
+          its stored analytics snapshots. Facebook controls its own account
+          and platform data under Meta&apos;s privacy terms.
+        </p>
+      </ContentSection>
+
       <ContentSection title="Your choices and questions">
         <p>
           Privacy rights vary by location. Depending on applicable law, you may

@@ -15,6 +15,7 @@ type Metric = {
   lastError?: string;
   configured: boolean;
 };
+type FacebookPage = { id: string; name: string };
 
 const labels: Record<Provider, string> = {
   facebook: "Facebook Page Followers",
@@ -81,6 +82,8 @@ export function SocialAnalyticsCards() {
   const [loading, setLoading] = useState(true);
   const [active, setActive] = useState<Provider | null>(null);
   const [error, setError] = useState("");
+  const [facebookPages, setFacebookPages] = useState<FacebookPage[]>([]);
+  const [selectedFacebookPage, setSelectedFacebookPage] = useState("");
 
   async function load() {
     setLoading(true);
@@ -90,6 +93,17 @@ export function SocialAnalyticsCards() {
       const body = (await response.json()) as { metrics?: Metric[]; error?: string };
       if (!response.ok) throw new Error(body.error ?? "Social analytics could not be loaded.");
       setMetrics(body.metrics ?? []);
+      const pagesResponse = await fetch("/api/admin/social-analytics/facebook", {
+        cache: "no-store",
+      });
+      const pagesBody = (await pagesResponse.json()) as {
+        pages?: FacebookPage[];
+        error?: string;
+      };
+      if (!pagesResponse.ok) {
+        throw new Error(pagesBody.error ?? "Facebook Pages could not be loaded.");
+      }
+      setFacebookPages(pagesBody.pages ?? []);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Social analytics could not be loaded.");
     } finally {
@@ -113,6 +127,46 @@ export function SocialAnalyticsCards() {
       await load();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Provider refresh failed.");
+    } finally {
+      setActive(null);
+    }
+
+  }
+
+  async function selectFacebookPage() {
+    if (!selectedFacebookPage) return;
+    setActive("facebook");
+    setError("");
+    try {
+      const response = await fetch("/api/admin/social-analytics/facebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pageId: selectedFacebookPage }),
+      });
+      const body = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(body.error ?? "Facebook Page could not be connected.");
+      setFacebookPages([]);
+      setSelectedFacebookPage("");
+      await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Facebook Page could not be connected.");
+    } finally {
+      setActive(null);
+    }
+  }
+
+  async function disconnectFacebook() {
+    setActive("facebook");
+    setError("");
+    try {
+      const response = await fetch("/api/admin/social-analytics/facebook", {
+        method: "DELETE",
+      });
+      const body = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(body.error ?? "Facebook could not be disconnected.");
+      await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Facebook could not be disconnected.");
     } finally {
       setActive(null);
     }
@@ -147,6 +201,32 @@ export function SocialAnalyticsCards() {
         <p role="alert" className="rounded-lg border border-red-400/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </p>
+      )}
+
+      {facebookPages.length > 0 && (
+        <div className="rounded-xl border border-[#ffd43b]/40 bg-black/30 p-4">
+          <h3 className="mb-2 text-sm font-semibold text-white">Select a Facebook Page</h3>
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={selectedFacebookPage}
+              onChange={(event) => setSelectedFacebookPage(event.target.value)}
+              className="min-h-10 rounded-lg border border-white/20 bg-black px-3 text-sm text-white"
+            >
+              <option value="">Choose a Page</option>
+              {facebookPages.map((page) => (
+                <option key={page.id} value={page.id}>{page.name}</option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => void selectFacebookPage()}
+              disabled={!selectedFacebookPage || active === "facebook"}
+              className="btn-secondary min-h-10 !rounded-lg px-3 py-2 text-xs !text-[#ffd43b] disabled:opacity-50"
+            >
+              {active === "facebook" ? "Connecting…" : "Use this Page"}
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -213,9 +293,16 @@ export function SocialAnalyticsCards() {
                     </a>
                   )}
                   {isConnected && (
-                    <button type="button" onClick={() => void refresh(provider)} disabled={active === provider} className="btn-secondary min-h-9 !rounded-lg px-3 py-2 text-xs !text-[#ffd43b] disabled:opacity-50">
-                      {active === provider ? "Refreshing…" : "Refresh"}
-                    </button>
+                    <>
+                      <button type="button" onClick={() => void refresh(provider)} disabled={active === provider} className="btn-secondary min-h-9 !rounded-lg px-3 py-2 text-xs !text-[#ffd43b] disabled:opacity-50">
+                        {active === provider ? "Refreshing…" : "Refresh"}
+                      </button>
+                      {provider === "facebook" && (
+                        <button type="button" onClick={() => void disconnectFacebook()} disabled={active === provider} className="btn-secondary min-h-9 !rounded-lg px-3 py-2 text-xs !text-red-300 disabled:opacity-50">
+                          Disconnect
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               ) : (

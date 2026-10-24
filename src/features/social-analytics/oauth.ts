@@ -23,7 +23,7 @@ export function oauthUrl(provider: SocialProvider, state: string) {
   const redirectUri = process.env[`${provider === "youtube" ? "GOOGLE" : provider.toUpperCase()}_OAUTH_REDIRECT_URI`];
   if (!redirectUri) throw new Error(`Missing OAuth redirect URI for ${provider}.`);
   if (provider === "facebook") {
-    return `https://www.facebook.com/v23.0/dialog/oauth?client_id=${encodeURIComponent(process.env.FACEBOOK_APP_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.facebook)}&state=${encodeURIComponent(state)}`;
+    return `https://www.facebook.com/v23.0/dialog/oauth?client_id=${encodeURIComponent(process.env.FACEBOOK_APP_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.facebook)}&response_type=code&state=${encodeURIComponent(state)}`;
   }
   if (provider === "instagram") {
     return `https://www.instagram.com/oauth/authorize?client_id=${encodeURIComponent(process.env.INSTAGRAM_APP_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.instagram)}&response_type=code&state=${encodeURIComponent(state)}`;
@@ -79,18 +79,11 @@ export async function completeOAuth(
     const pages = await providerJson("https://graph.facebook.com/v23.0/me/accounts?fields=id,name,access_token", {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
-    const page = Array.isArray(pages.data)
-      ? pages.data.find((entry) => !process.env.FACEBOOK_PAGE_ID || (entry as Record<string, unknown>).id === process.env.FACEBOOK_PAGE_ID) as Record<string, unknown> | undefined
-      : undefined;
-    if (!page?.id || typeof page.access_token !== "string") throw new Error("No authorized Facebook Page was selected.");
-    await saveConnection({
-      provider,
-      accountId: String(page.id),
-      accountName: typeof page.name === "string" ? page.name : "Facebook Page",
-      accessToken: page.access_token,
-      scopes: scopes.facebook.split(","),
-    });
-    return;
+    if (!accessToken) throw new Error("Facebook authorization returned no user access token.");
+    if (!Array.isArray(pages.data) || pages.data.length === 0) {
+      throw new Error("No Facebook Pages are available for this account.");
+    }
+    return { provider: "facebook" as const, userAccessToken: accessToken };
   }
   if (provider === "instagram") {
     const token = await providerJson("https://api.instagram.com/oauth/access_token", {
