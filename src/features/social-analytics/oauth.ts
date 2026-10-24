@@ -15,6 +15,10 @@ const scopes = {
   youtube: "https://www.googleapis.com/auth/youtube.readonly",
 } satisfies Record<SocialProvider, string>;
 
+function isTikTokWebRedirect(redirectUri: string) {
+  return redirectUri.startsWith("https://");
+}
+
 export function oauthUrl(provider: SocialProvider, state: string) {
   const redirectUri = process.env[`${provider === "youtube" ? "GOOGLE" : provider.toUpperCase()}_OAUTH_REDIRECT_URI`];
   if (!redirectUri) throw new Error(`Missing OAuth redirect URI for ${provider}.`);
@@ -25,12 +29,22 @@ export function oauthUrl(provider: SocialProvider, state: string) {
     return `https://www.instagram.com/oauth/authorize?client_id=${encodeURIComponent(process.env.INSTAGRAM_APP_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.instagram)}&response_type=code&state=${encodeURIComponent(state)}`;
   }
   if (provider === "tiktok") {
+    const clientKey = encodeURIComponent(process.env.TIKTOK_CLIENT_KEY ?? "");
+    const encodedRedirectUri = encodeURIComponent(redirectUri);
+    const encodedScope = encodeURIComponent(scopes.tiktok);
+    const baseUrl =
+      `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}` +
+      `&redirect_uri=${encodedRedirectUri}&scope=${encodedScope}` +
+      `&response_type=code&state=${encodeURIComponent(state)}`;
+
+    if (isTikTokWebRedirect(redirectUri)) return baseUrl;
+
     const codeVerifier = randomBytes(32).toString("base64url");
     const codeChallenge = createHash("sha256")
       .update(codeVerifier)
       .digest("hex");
     return {
-      url: `https://www.tiktok.com/v2/auth/authorize/?client_key=${encodeURIComponent(process.env.TIKTOK_CLIENT_KEY ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.tiktok)}&response_type=code&state=${encodeURIComponent(state)}&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256`,
+      url: `${baseUrl}&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256`,
       codeVerifier,
     };
   }
@@ -109,20 +123,23 @@ export async function completeOAuth(
     return;
   }
   if (provider === "tiktok") {
-    if (!codeVerifier) {
-      throw new Error("TikTok authorization did not return a valid PKCE verifier.");
+    const body = new URLSearchParams({
+      client_key: process.env.TIKTOK_CLIENT_KEY ?? "",
+      client_secret: process.env.TIKTOK_CLIENT_SECRET ?? "",
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: redirectUri,
+    });
+    if (!isTikTokWebRedirect(redirectUri)) {
+      if (!codeVerifier) {
+        throw new Error("TikTok authorization did not return a valid PKCE verifier.");
+      }
+      body.set("code_verifier", codeVerifier);
     }
     const token = await providerJson("https://open.tiktokapis.com/v2/oauth/token/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        client_key: process.env.TIKTOK_CLIENT_KEY ?? "",
-        client_secret: process.env.TIKTOK_CLIENT_SECRET ?? "",
-        code,
-        grant_type: "authorization_code",
-        redirect_uri: redirectUri,
-        code_verifier: codeVerifier,
-      }),
+      body,
     });
     if (typeof token.access_token !== "string" || typeof token.open_id !== "string") {
       throw new Error("TikTok authorization returned incomplete account data.");
