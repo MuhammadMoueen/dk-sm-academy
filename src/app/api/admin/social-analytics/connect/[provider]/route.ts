@@ -22,5 +22,16 @@ export async function GET(
     maxAge: 600,
     path: "/",
   });
-  return NextResponse.redirect(oauthUrl(provider, state));
+  const authorization = oauthUrl(provider, state);
+  if (typeof authorization === "string") {
+    return NextResponse.redirect(authorization);
+  }
+  (await cookies()).set("social_oauth_tiktok_verifier", authorization.codeVerifier, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 600,
+    path: "/",
+  });
+  return NextResponse.redirect(authorization.url);
 }

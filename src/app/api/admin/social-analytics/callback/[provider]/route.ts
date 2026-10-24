@@ -39,6 +39,7 @@ export async function GET(
   const cookieStore = await cookies();
   const stateCookieName = `social_oauth_state_${provider}`;
   const storedState = cookieStore.get(stateCookieName)?.value;
+  const codeVerifier = cookieStore.get("social_oauth_tiktok_verifier")?.value;
 
   if (
     !storedState ||
@@ -61,8 +62,9 @@ export async function GET(
   }
 
   try {
-    await completeOAuth(provider, code);
+    await completeOAuth(provider, code, provider === "tiktok" ? codeVerifier : undefined);
     cookieStore.delete(stateCookieName);
+    if (provider === "tiktok") cookieStore.delete("social_oauth_tiktok_verifier");
 
     return NextResponse.redirect(
       new URL("/admin/dashboard?social=connected", url.origin),

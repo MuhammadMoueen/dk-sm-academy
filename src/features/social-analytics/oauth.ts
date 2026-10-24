@@ -6,6 +6,7 @@ import {
   type SocialProvider,
   verifyOAuthState,
 } from "./social-analytics";
+import { createHash, randomBytes } from "node:crypto";
 
 const scopes = {
   facebook: "pages_show_list,pages_read_engagement",
@@ -24,7 +25,14 @@ export function oauthUrl(provider: SocialProvider, state: string) {
     return `https://www.instagram.com/oauth/authorize?client_id=${encodeURIComponent(process.env.INSTAGRAM_APP_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.instagram)}&response_type=code&state=${encodeURIComponent(state)}`;
   }
   if (provider === "tiktok") {
-    return `https://www.tiktok.com/v2/auth/authorize/?client_key=${encodeURIComponent(process.env.TIKTOK_CLIENT_KEY ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.tiktok)}&response_type=code&state=${encodeURIComponent(state)}`;
+    const codeVerifier = randomBytes(32).toString("base64url");
+    const codeChallenge = createHash("sha256")
+      .update(codeVerifier)
+      .digest("hex");
+    return {
+      url: `https://www.tiktok.com/v2/auth/authorize/?client_key=${encodeURIComponent(process.env.TIKTOK_CLIENT_KEY ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes.tiktok)}&response_type=code&state=${encodeURIComponent(state)}&code_challenge=${encodeURIComponent(codeChallenge)}&code_challenge_method=S256`,
+      codeVerifier,
+    };
   }
   return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(process.env.GOOGLE_CLIENT_ID ?? "")}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scopes.youtube)}&access_type=offline&prompt=consent&state=${encodeURIComponent(state)}`;
 }
@@ -36,7 +44,11 @@ async function providerJson(url: string, init?: RequestInit) {
   return body ?? {};
 }
 
-export async function completeOAuth(provider: SocialProvider, code: string) {
+export async function completeOAuth(
+  provider: SocialProvider,
+  code: string,
+  codeVerifier?: string,
+) {
   const redirectUri = process.env[`${provider === "youtube" ? "GOOGLE" : provider.toUpperCase()}_OAUTH_REDIRECT_URI`] ?? "";
   if (provider === "facebook") {
     const token = await providerJson("https://graph.facebook.com/v23.0/oauth/access_token", {
@@ -97,6 +109,9 @@ export async function completeOAuth(provider: SocialProvider, code: string) {
     return;
   }
   if (provider === "tiktok") {
+    if (!codeVerifier) {
+      throw new Error("TikTok authorization did not return a valid PKCE verifier.");
+    }
     const token = await providerJson("https://open.tiktokapis.com/v2/oauth/token/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -106,6 +121,7 @@ export async function completeOAuth(provider: SocialProvider, code: string) {
         code,
         grant_type: "authorization_code",
         redirect_uri: redirectUri,
+        code_verifier: codeVerifier,
       }),
     });
     if (typeof token.access_token !== "string" || typeof token.open_id !== "string") {
