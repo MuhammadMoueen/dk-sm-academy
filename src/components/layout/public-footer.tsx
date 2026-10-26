@@ -26,6 +26,7 @@ const services = [
 const importantLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms" },
+  { label: "Data Deletion", href: "/data-deletion" },
   { label: "Disclaimer", href: "/disclaimer" },
 ];
 
