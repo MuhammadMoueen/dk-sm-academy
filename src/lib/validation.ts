@@ -46,23 +46,22 @@ const contentBlockSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("heading"),
     level: z.union([z.literal(2), z.literal(3)]),
-    text: z.string().trim().min(1).max(240),
+    text: z.string().trim().min(1),
   }),
   z.object({
     type: z.literal("paragraph"),
-    text: z.string().trim().min(1).max(8000),
+    text: z.string().trim().min(1),
   }),
   z.object({
     type: z.literal("list"),
     ordered: z.boolean().optional(),
     items: z
-      .array(z.string().trim().min(1).max(1000))
-      .min(1)
-      .max(100),
+      .array(z.string().trim().min(1))
+      .min(1),
   }),
   z.object({
     type: z.literal("link"),
-    text: z.string().trim().min(1).max(500),
+    text: z.string().trim().min(1),
     href: z
       .string()
       .trim()
@@ -118,7 +117,7 @@ export const articleSchema = z.object({
     )
     .optional()
     .default(""),
-  content: z.array(contentBlockSchema).max(200),
+  content: z.array(contentBlockSchema),
   thumbnailUrl: imageReference,
   hashtags: hashtagsSchema,
   category: z.string().trim().max(80).optional(),

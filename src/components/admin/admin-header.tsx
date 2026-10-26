@@ -14,6 +14,10 @@ export function AdminHeader({ account }: { account: AdminAccount }) {
   const [loggingOut, setLoggingOut] = useState(false);
   const profileControlRef = useRef<HTMLButtonElement>(null);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuCloseRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
+  const wasMenuOpenRef = useRef(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,6 +48,49 @@ export function AdminHeader({ account }: { account: AdminAccount }) {
     };
   }, [profileOpen]);
 
+  useEffect(() => {
+    if (menuOpen) {
+      mobileMenuCloseRef.current?.focus();
+    } else if (wasMenuOpenRef.current) {
+      mobileMenuButtonRef.current?.focus();
+    }
+    wasMenuOpenRef.current = menuOpen;
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key !== "Tab") return;
+
+      const focusableElements = Array.from(
+        mobileMenuRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+      if (focusableElements.length === 0) return;
+
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [menuOpen]);
+
   async function logout() {
     setLoggingOut(true);
     setError("");
@@ -64,24 +111,27 @@ export function AdminHeader({ account }: { account: AdminAccount }) {
   return (
     <header className="sticky top-0 z-30 border-b border-[#ffd43b]/40 bg-[#090909]/90 px-4 py-3 shadow-[0_4px_24px_rgba(255,212,59,0.05)] backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex min-h-[52px] items-center justify-between gap-3">
-        <div className="relative lg:hidden">
+        <div className="lg:hidden">
           <button
+            ref={mobileMenuButtonRef}
             type="button"
+            aria-label={menuOpen ? "Close admin navigation" : "Open admin navigation"}
             aria-expanded={menuOpen}
             aria-controls="admin-mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
-            className="min-h-11 rounded-lg border border-white/15 px-3 text-sm font-semibold text-white hover:border-[#ffd43b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+            className="grid h-11 w-11 place-items-center rounded-xl border border-[#ffd43b]/40 bg-[#15130b] text-[#ffd43b] shadow-[0_0_16px_rgba(255,212,59,0.08)] transition hover:border-[#ffd43b] hover:bg-[#211d0d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b] focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
           >
-            {menuOpen ? "Close menu" : "Menu"}
+            <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
+            {menuOpen ? (
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="m6 6 12 12M18 6 6 18" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            )}
           </button>
-          {menuOpen && (
-            <div
-              id="admin-mobile-navigation"
-              className="absolute left-0 top-[calc(100%+10px)] z-40 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-[#ffd43b]/35 bg-[#10100f]/95 p-3 shadow-[0_16px_50px_rgba(0,0,0,0.7)] backdrop-blur-xl"
-            >
-              <AdminNavigation onNavigate={() => setMenuOpen(false)} />
-            </div>
-          )}
         </div>
         <div className="hidden min-w-0 sm:block">
           <p className="mb-0 truncate text-lg font-bold text-white">
@@ -182,6 +232,45 @@ export function AdminHeader({ account }: { account: AdminAccount }) {
           )}
         </div>
       </div>
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px] lg:hidden"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setMenuOpen(false);
+          }}
+        >
+          <aside
+            ref={mobileMenuRef}
+            id="admin-mobile-navigation"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-mobile-navigation-title"
+            className="h-full w-[min(20rem,88vw)] border-r border-[#ffd43b]/35 bg-[#0b0b0a] p-5 shadow-[12px_0_40px_rgba(0,0,0,0.65)]"
+          >
+            <div className="mb-8 flex items-center justify-between gap-4">
+              <div>
+                <p id="admin-mobile-navigation-title" className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#ffd43b]">
+                  Admin navigation
+                </p>
+                <p className="mb-0 truncate text-lg font-bold text-white">{account.displayName}</p>
+              </div>
+              <button
+                ref={mobileMenuCloseRef}
+                type="button"
+                aria-label="Close admin navigation"
+                onClick={() => setMenuOpen(false)}
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-white/15 text-gray-300 transition hover:border-[#ffd43b] hover:text-[#ffd43b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="m6 6 12 12M18 6 6 18" />
+                </svg>
+              </button>
+            </div>
+            <AdminNavigation showIcons onNavigate={() => setMenuOpen(false)} />
+          </aside>
+        </div>
+      )}
       {error && (
         <p role="alert" className="mb-0 mt-2 text-sm text-red-300">
           {error}

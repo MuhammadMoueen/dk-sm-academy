@@ -276,6 +276,36 @@ export function ArticleEditor({
     return mapped;
   }
 
+  function updateContentBlock(
+    index: number,
+    block: ArticleContentBlock,
+  ) {
+    change("content", form.content.map((current, currentIndex) =>
+      currentIndex === index ? block : current,
+    ));
+  }
+
+  function addContentBlock(type: ArticleContentBlock["type"]) {
+    const block: ArticleContentBlock =
+      type === "heading"
+        ? { type, level: 2, text: "" }
+        : type === "paragraph"
+          ? { type, text: "" }
+          : type === "list"
+            ? { type, ordered: false, items: [""] }
+            : type === "link"
+              ? { type, text: "", href: "" }
+              : { type, src: "", alt: "", caption: "" };
+    change("content", [...form.content, block]);
+  }
+
+  function removeContentBlock(index: number) {
+    change(
+      "content",
+      form.content.filter((_, currentIndex) => currentIndex !== index),
+    );
+  }
+
   async function submit(status: "draft" | "published") {
     if (saving) return;
 
@@ -287,19 +317,10 @@ export function ArticleEditor({
     setErrors({});
     setMessage("");
 
-    // The content editor has been removed from the form.
-    // Use the short description as a basic paragraph for compatibility.
     const content: ArticleContentBlock[] =
       form.content.length > 0
         ? form.content
-        : form.excerpt.trim()
-          ? [
-              {
-                type: "paragraph",
-                text: form.excerpt.trim(),
-              },
-            ]
-          : [];
+        : [];
 
     const payload = {
       ...form,
@@ -412,16 +433,7 @@ export function ArticleEditor({
   }
 
   const previewContent: ArticleContentBlock[] =
-    form.content.length > 0
-      ? form.content
-      : form.excerpt.trim()
-        ? [
-            {
-              type: "paragraph",
-              text: form.excerpt.trim(),
-            },
-          ]
-        : [];
+    form.content;
 
   return (
     <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.7fr)]">
@@ -545,6 +557,188 @@ export function ArticleEditor({
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="rounded-xl border border-white/10 bg-[#111] p-4 sm:p-6">
+          <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="mb-1 text-lg font-bold">Article content</h2>
+              <p className="mb-0 text-sm text-gray-400">
+                Add as many headings, paragraphs, lists, links, and images as your article needs.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(["heading", "paragraph", "list", "link", "image"] as const).map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => addContentBlock(type)}
+                  className="min-h-9 rounded-lg border border-[#ffd43b]/40 px-3 text-xs font-semibold capitalize text-[#ffd43b] transition hover:bg-[#ffd43b]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+                >
+                  Add {type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {form.content.length === 0 ? (
+            <p className="mb-0 rounded-lg border border-dashed border-white/15 p-5 text-sm text-gray-400">
+              No content blocks yet. Add a paragraph to start writing.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {form.content.map((block, index) => (
+                <div
+                  key={`${block.type}-${index}`}
+                  className="rounded-lg border border-white/10 bg-[#090909] p-3 sm:p-4"
+                >
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <span className="text-xs font-bold uppercase tracking-[0.14em] text-[#ffd43b]">
+                      {block.type}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeContentBlock(index)}
+                      className="text-xs font-semibold text-gray-400 underline underline-offset-2 transition hover:text-red-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd43b]"
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  {block.type === "heading" && (
+                    <div className="grid gap-3 sm:grid-cols-[auto_1fr]">
+                      <select
+                        aria-label={`Heading level ${index + 1}`}
+                        value={block.level}
+                        onChange={(event) =>
+                          updateContentBlock(index, {
+                            ...block,
+                            level: Number(event.target.value) as 2 | 3,
+                          })
+                        }
+                        className={`${inputClass} sm:w-24`}
+                      >
+                        <option value={2}>H2</option>
+                        <option value={3}>H3</option>
+                      </select>
+                      <input
+                        aria-label={`Heading text ${index + 1}`}
+                        value={block.text}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, text: event.target.value })
+                        }
+                        placeholder="Heading text"
+                        className={inputClass}
+                      />
+                    </div>
+                  )}
+
+                  {block.type === "paragraph" && (
+                    <textarea
+                      aria-label={`Paragraph ${index + 1}`}
+                      value={block.text}
+                      onChange={(event) =>
+                        updateContentBlock(index, { ...block, text: event.target.value })
+                      }
+                      rows={7}
+                      placeholder="Write your article paragraph here..."
+                      className={`${inputClass} resize-y py-2`}
+                    />
+                  )}
+
+                  {block.type === "list" && (
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-2 text-sm text-gray-300">
+                        <input
+                          type="checkbox"
+                          checked={block.ordered ?? false}
+                          onChange={(event) =>
+                            updateContentBlock(index, {
+                              ...block,
+                              ordered: event.target.checked,
+                            })
+                          }
+                          className="accent-[#ffd43b]"
+                        />
+                        Numbered list
+                      </label>
+                      <textarea
+                        aria-label={`List items ${index + 1}`}
+                        value={block.items.join("\n")}
+                        onChange={(event) =>
+                          updateContentBlock(index, {
+                            ...block,
+                            items: event.target.value
+                              .split("\n")
+                              .filter((item) => item.trim().length > 0),
+                          })
+                        }
+                        rows={5}
+                        placeholder="One list item per line"
+                        className={`${inputClass} resize-y py-2`}
+                      />
+                    </div>
+                  )}
+
+                  {block.type === "link" && (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <input
+                        aria-label={`Link text ${index + 1}`}
+                        value={block.text}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, text: event.target.value })
+                        }
+                        placeholder="Link text"
+                        className={inputClass}
+                      />
+                      <input
+                        aria-label={`Link URL ${index + 1}`}
+                        value={block.href}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, href: event.target.value })
+                        }
+                        placeholder="https://example.com"
+                        className={inputClass}
+                      />
+                    </div>
+                  )}
+
+                  {block.type === "image" && (
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <input
+                        aria-label={`Image source ${index + 1}`}
+                        value={block.src}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, src: event.target.value })
+                        }
+                        placeholder="/images/article.png"
+                        className={inputClass}
+                      />
+                      <input
+                        aria-label={`Image alt text ${index + 1}`}
+                        value={block.alt}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, alt: event.target.value })
+                        }
+                        placeholder="Image description"
+                        className={inputClass}
+                      />
+                      <input
+                        aria-label={`Image caption ${index + 1}`}
+                        value={block.caption ?? ""}
+                        onChange={(event) =>
+                          updateContentBlock(index, { ...block, caption: event.target.value })
+                        }
+                        placeholder="Optional caption"
+                        className={`${inputClass} sm:col-span-2`}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          <FieldError>{errors.content}</FieldError>
         </section>
 
         <section className="rounded-xl border border-white/10 bg-[#111] p-4 sm:p-6">

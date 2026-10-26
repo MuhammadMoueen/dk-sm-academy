@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 
+const youtubeChannelUrl = siteConfig.communityPlatforms.find((platform) => platform.name === "YouTube")?.href;
+const whatsappChannelUrl = siteConfig.communityPlatforms.find((platform) => platform.name === "WhatsApp")?.href;
+
 type Metric = {
   provider: "youtube";
   accountName: string;
@@ -134,13 +137,16 @@ export function SocialAnalyticsCards() {
           </p>
           {change && <p className={`mb-3 text-sm ${change.difference >= 0 ? "text-emerald-300" : "text-red-300"}`}>{change.difference >= 0 ? "+" : ""}{change.difference.toLocaleString()} subscribers since previous snapshot{change.percentage !== null ? ` (${change.percentage.toFixed(1)}%)` : ""}</p>}
           <p className="mb-5 min-h-5 text-xs text-gray-500">{metric?.observedAt ? `Updated ${new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(new Date(metric.observedAt))}` : "No successful update yet"}</p>
-          {connected ? (
-            <button type="button" onClick={() => void refresh()} disabled={refreshing} className="btn-secondary min-h-10 !rounded-lg px-4 py-2 text-xs !text-[#ffd43b] disabled:opacity-50">
-              {refreshing ? "Refreshing…" : "Refresh YouTube"}
-            </button>
-          ) : metric?.configured ? (
-            <Link href="/api/admin/social-analytics/connect/youtube" className="btn-secondary inline-flex min-h-10 items-center !rounded-lg px-4 py-2 text-xs !text-[#ffd43b]">{metric.status === "expired" ? "Reconnect YouTube" : "Connect YouTube"}</Link>
-          ) : <p className="mb-0 text-xs text-gray-500">Add the Google server environment variables to enable YouTube.</p>}
+          <div className="flex flex-wrap gap-2">
+            {connected ? (
+              <button type="button" onClick={() => void refresh()} disabled={refreshing} className="btn-secondary min-h-10 !rounded-lg px-4 py-2 text-xs !text-[#ffd43b] disabled:opacity-50">
+                {refreshing ? "Refreshing…" : "Refresh YouTube"}
+              </button>
+            ) : metric?.configured ? (
+              <Link href="/api/admin/social-analytics/connect/youtube" className="btn-secondary inline-flex min-h-10 items-center !rounded-lg px-4 py-2 text-xs !text-[#ffd43b]">{metric.status === "expired" ? "Reconnect YouTube" : "Connect YouTube"}</Link>
+            ) : <p className="mb-0 text-xs text-gray-500">Add the Google server environment variables to enable YouTube.</p>}
+            {youtubeChannelUrl && <a href={youtubeChannelUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary inline-flex min-h-10 items-center !rounded-lg px-4 py-2 text-xs !text-[#ffd43b]">Open YouTube Channel</a>}
+          </div>
         </CardShell>
 
         <CardShell>
@@ -154,15 +160,10 @@ export function SocialAnalyticsCards() {
                 <h3 className="mb-0 text-xl font-bold text-white">Channel information</h3>
               </div>
             </div>
-            <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-[10px] font-semibold text-gray-400">API unavailable</span>
           </div>
-          <p className="mb-3 mt-8 text-lg font-semibold text-white">Follower count unavailable</p>
-          <p className="mb-5 max-w-xl text-sm leading-relaxed text-gray-400">
-            Meta&apos;s official WhatsApp APIs currently do not expose follower counts for WhatsApp Channels. No fabricated metric or unsupported API request is used.
-          </p>
-          <a href={siteConfig.communityUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary inline-flex min-h-10 items-center !rounded-lg px-4 py-2 text-xs !text-[#ffd43b]">
+          {whatsappChannelUrl && <a href={whatsappChannelUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary mt-8 inline-flex min-h-10 items-center !rounded-lg px-4 py-2 text-xs !text-[#ffd43b]">
             Open WhatsApp Channel
-          </a>
+          </a>}
         </CardShell>
       </div>
     </section>

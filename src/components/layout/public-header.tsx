@@ -75,12 +75,18 @@ export function PublicHeader() {
 
           <Link
             href={siteConfig.communityUrl}
-            className="site-btn-primary hidden lg:inline-flex"
+            className="site-btn-primary !hidden whitespace-nowrap lg:!inline-flex"
           >
             Join Our Community <span aria-hidden="true">→</span>
           </Link>
 
-          <div className="lg:hidden">
+          <div className="ml-auto flex min-w-0 items-center gap-2 lg:hidden">
+            <Link
+              href={siteConfig.communityUrl}
+              className="site-btn-primary !inline-flex !min-h-9 shrink-0 !gap-1.5 !rounded-lg !px-2.5 !py-1.5 !text-[11px] !leading-none sm:!px-3 sm:!text-xs"
+            >
+              Join Community <span aria-hidden="true">→</span>
+            </Link>
             <MobileNavigation />
           </div>
         </div>
