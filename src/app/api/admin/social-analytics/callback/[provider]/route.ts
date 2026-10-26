@@ -4,11 +4,7 @@ import {
   completeOAuth,
   verifyOAuthState,
 } from "@/features/social-analytics/oauth";
-import {
-  SOCIAL_PROVIDERS,
-  encryptSecret,
-  type SocialProvider,
-} from "@/features/social-analytics/social-analytics";
+import { SOCIAL_PROVIDERS, type SocialProvider } from "@/features/social-analytics/social-analytics";
 import { getAdminSession } from "@/lib/auth";
 
 export async function GET(
@@ -40,7 +36,6 @@ export async function GET(
   const cookieStore = await cookies();
   const stateCookieName = `social_oauth_state_${provider}`;
   const storedState = cookieStore.get(stateCookieName)?.value;
-  const codeVerifier = cookieStore.get("social_oauth_tiktok_verifier")?.value;
 
   if (
     !storedState ||
@@ -63,29 +58,8 @@ export async function GET(
   }
 
   try {
-    const result = await completeOAuth(
-      provider,
-      code,
-      provider === "tiktok" ? codeVerifier : undefined,
-    );
-    if (provider === "facebook") {
-      if (!result || result.provider !== "facebook") {
-        throw new Error("Facebook authorization returned incomplete account data.");
-      }
-      cookieStore.set(
-        "social_oauth_facebook_pending",
-        encryptSecret(JSON.stringify(result)),
-        {
-          httpOnly: true,
-          sameSite: "lax",
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 600,
-          path: "/",
-        },
-      );
-    }
+    await completeOAuth(provider, code);
     cookieStore.delete(stateCookieName);
-    if (provider === "tiktok") cookieStore.delete("social_oauth_tiktok_verifier");
 
     return NextResponse.redirect(
       new URL("/admin/dashboard?social=connected", url.origin),

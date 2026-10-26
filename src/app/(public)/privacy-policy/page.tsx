@@ -55,20 +55,19 @@ export default function PrivacyPolicyPage() {
         </p>
       </ContentSection>
 
-      <ContentSection title="Facebook connection and Page analytics">
+      <ContentSection title="Connected social analytics">
         <p>
-          An authenticated administrator may connect a Facebook account to
-          select an accessible Facebook Page and view supported Page metrics.
-          The integration receives the permissions requested in the Facebook
-          authorization screen and uses the selected Page access token only
-          for the connected analytics feature.
+          An authenticated administrator may connect a supported social
+          account to view the audience metric provided by that platform.
+          The current dashboard supports YouTube subscriber analytics.
         </p>
         <p>
           Access tokens are exchanged and stored on the server in encrypted
           form. They are not returned to browser code or displayed in the
-          dashboard. Disconnecting Facebook removes the local connection and
-          its stored analytics snapshots. Facebook controls its own account
-          and platform data under Meta&apos;s privacy terms.
+          dashboard. Disconnecting a supported connection removes the local
+          connection and its stored analytics snapshots. Each external
+          platform controls its own account and platform data under its own
+          privacy terms.
         </p>
       </ContentSection>
 

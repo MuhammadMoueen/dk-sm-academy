@@ -10,7 +10,11 @@ export async function GET(
 ) {
   const auth = await requireApiAdmin(request);
   if (!auth.ok) return auth.response;
-  const provider = (await context.params).provider as SocialProvider;
+  const providerParam = (await context.params).provider;
+  if (providerParam !== "youtube") {
+    return NextResponse.json({ error: "This provider is not available." }, { status: 404 });
+  }
+  const provider: SocialProvider = "youtube";
   if (!SOCIAL_PROVIDERS.includes(provider) || !configuredProvider(provider)) {
     return NextResponse.json({ error: "This provider is not configured." }, { status: 400 });
   }
@@ -23,15 +27,5 @@ export async function GET(
     path: "/",
   });
   const authorization = oauthUrl(provider, state);
-  if (typeof authorization === "string") {
-    return NextResponse.redirect(authorization);
-  }
-  (await cookies()).set("social_oauth_tiktok_verifier", authorization.codeVerifier, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 600,
-    path: "/",
-  });
-  return NextResponse.redirect(authorization.url);
+  return NextResponse.redirect(authorization);
 }

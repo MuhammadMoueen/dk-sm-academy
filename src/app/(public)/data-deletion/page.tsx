@@ -5,7 +5,7 @@ import { siteConfig } from "@/config/site";
 export const metadata = {
   title: "Data Deletion Instructions | DK & SM Academy",
   description:
-    "Instructions for requesting deletion of Facebook-related and other personal data handled by DK & SM Academy.",
+    "Instructions for requesting deletion of personal data handled by DK & SM Academy.",
 };
 
 export default async function DataDeletionPage({
@@ -18,13 +18,13 @@ export default async function DataDeletionPage({
     <ContentPage
       eyebrow="Privacy"
       title={<>Data Deletion <span className="text-[#ffd43b]">Instructions</span></>}
-      description="How to request deletion of Facebook-related data and other personal information handled by DK & SM Academy."
+      description="How to request deletion of personal information handled by DK & SM Academy."
     >
       {code && (
         <ContentSection title="Request status">
           <p>
-            Your verified Facebook data deletion request was received and the
-            local Facebook connection data was removed.
+            Your verified data deletion request was received and the
+            applicable local connection data was removed.
           </p>
           <p>
             Confirmation code: <strong className="text-white">{code}</strong>
@@ -34,10 +34,8 @@ export default async function DataDeletionPage({
 
       <ContentSection title="How to request deletion">
         <p>
-          To request deletion of Facebook-related data, remove the DK &amp; SM
-          Academy app from your Facebook account&apos;s Apps and Websites
-          settings, where Facebook can send a verified deletion request to the
-          application. You may also contact the Academy through its{" "}
+          You may request deletion of personal data processed through this
+          website by contacting the Academy through its{" "}
           <Link
             href={siteConfig.communityUrl}
             target="_blank"
@@ -60,8 +58,7 @@ export default async function DataDeletionPage({
           Include your name or organization name, the email or account
           identifier associated with the request if applicable, the service or
           connection involved, and a clear description of the information you
-          want deleted. For Facebook requests, identify the connected Facebook
-          account or Page without sending an access token.
+          want deleted. Do not send an access token.
         </p>
       </ContentSection>
 
@@ -73,18 +70,18 @@ export default async function DataDeletionPage({
           token for verification.
         </p>
         <p>
-          After verification, locally stored Facebook connection data and
-          related analytics snapshots can be removed through the existing
-          server-side deletion process. Other personal data handled by the
-          website will be deleted when applicable, except where retention is
+          After verification, locally stored connection data and related
+          analytics snapshots can be removed through the applicable
+          server-side process. Other personal data handled by the website will
+          be deleted when applicable, except where retention is
           required for legal, fraud-prevention, security, dispute-resolution,
           or other applicable obligations. The website does not publish a
           fixed hosting-log retention period.
         </p>
         <p>
-          Deleting local data does not delete information held by Facebook,
-          hosting providers, or other external platforms. You must make those
-          requests directly with the relevant provider.
+          Deleting local data does not delete information held by hosting
+          providers or other external platforms. You must make those requests
+          directly with the relevant provider.
         </p>
       </ContentSection>
     </ContentPage>

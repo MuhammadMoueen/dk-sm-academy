@@ -3,14 +3,11 @@ import "server-only";
 import { createCipheriv, createDecipheriv, createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { getDb } from "@/lib/db";
 
-export const SOCIAL_PROVIDERS = ["facebook", "tiktok", "youtube", "instagram"] as const;
+export const SOCIAL_PROVIDERS = ["youtube"] as const;
 export type SocialProvider = (typeof SOCIAL_PROVIDERS)[number];
 
 export const SOCIAL_LABELS: Record<SocialProvider, string> = {
-  facebook: "Facebook Page Followers",
-  tiktok: "TikTok Followers",
   youtube: "YouTube Subscribers",
-  instagram: "Instagram Business Followers",
 };
 
 type ConnectionRow = {
@@ -73,10 +70,7 @@ export function decryptSecret(value: string) {
 
 export function configuredProvider(provider: SocialProvider) {
   const required: Record<SocialProvider, string[]> = {
-    facebook: ["FACEBOOK_APP_ID", "FACEBOOK_APP_SECRET", "FACEBOOK_OAUTH_REDIRECT_URI"],
-    tiktok: ["TIKTOK_CLIENT_KEY", "TIKTOK_CLIENT_SECRET", "TIKTOK_OAUTH_REDIRECT_URI"],
     youtube: ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_OAUTH_REDIRECT_URI"],
-    instagram: ["INSTAGRAM_APP_ID", "INSTAGRAM_APP_SECRET", "INSTAGRAM_OAUTH_REDIRECT_URI"],
   };
   return Boolean(process.env.SOCIAL_ANALYTICS_ENCRYPTION_KEY) &&
     required[provider].every((name) => Boolean(process.env[name]));
